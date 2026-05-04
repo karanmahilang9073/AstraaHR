@@ -23,13 +23,14 @@ app.use(express.json())
 const server = http.createServer(app)
 
 app.use(cors({
-    origin : "http://localhost:5173",
+    origin : ['http://localhost:5173', 'https://work-sphere-sepia.vercel.app'],
+    // origin : 'http://localhost:5173',
     credentials : true,
 }))
 
 const PORT = process.env.PORT || 7000
 
-
+    
 // basic response on browser
 app.get('/', (req, res)=> {
     res.send('backend running successfully')
@@ -53,9 +54,9 @@ app.use('/api/ai', aiRouter)
 initSocket(server)
 
 //global error handler
-app.use((err,req,res,next) => {
+app.use((err, req, res, next) => {
     console.error(err.stack)
-    res.status(err.statusCode || 500).json({message : err.message || 'internal server error'})
+    res.status(err.statusCode || 500).json({success : false, message : err.message || 'internal server error'})
 })
 
 server.listen(PORT, () => {

@@ -1,11 +1,10 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { aiResponse } from "../services/aiService.js";
-import User from "../models/User.js";
 import Task from '../models/Task.js'
 import Salary from '../models/Salary.js'
 import Attendance from '../models/Attendance.js'
 import Leave from '../models/Leave.js'
-import { application } from "express";
+import AiChat from "../models/AiChat.js";
 
 export const predictSalary = asyncHandler(async(req, res) => {
     const {employeeId} = req.body
@@ -15,8 +14,14 @@ export const predictSalary = asyncHandler(async(req, res) => {
         throw error
     }
 
+    if(!['Hr','Admin','hr','admin'].includes(req.user.role)) {
+        const error = new Error('not authorized to predict salary')
+        error.statusCode = 403
+        throw error
+    }
+
     //fetch last 6 salary records
-    const  salaries = await Salary.find({employee : employeeId}).sort({month : -1}).limit(6)
+    const  salaries = await Salary.find({employee : employeeId}).sort({month : -1}).limit(6).lean()
     if(!salaries || salaries.length === 0){
         const error = new Error('no salary record found')
         error.statusCode = 404
@@ -24,7 +29,7 @@ export const predictSalary = asyncHandler(async(req, res) => {
     }
 
     //prepare salary data for prompt
-    const salaryData = salaries.map((s) => `Month: ${s.month}, Salary: ${s.ammount}`).join("\n")
+    const salaryData = salaries.map((s) => `Month: ${s.month}, Salary: ${s.amount}`).join("\n")
 
     const prompt = `you are an HR analytic assistant. based on following past salary data, predict the nexts month's salary. Salary History: ${salaryData}. give a clear predicted salary with a short explanation`
 
@@ -89,7 +94,7 @@ export const analyzeLeavereq = asyncHandler(async(req, res) => {
 })
 
 export const getPerformanceInsights = asyncHandler(async(req, res) => {
-    const {employeeId} = req.body
+    const {employeeId} = req.query
     if(!employeeId){
         const error = new Error('employee id is required')
         error.statusCode =  400
@@ -108,11 +113,19 @@ export const getPerformanceInsights = asyncHandler(async(req, res) => {
     const attendanceData = attendance.length ? attendance .map((a) => {
         return `Date: ${a.date} | Status: ${a.status}`; }).join("\n") : "No attendance records";
 
-    const prompt = `you are an HR performance analyst.
-    based on the following employee data, generate a performance report.
+    const prompt = `you are an HR performance analyst. Analyze this employee data and respond with ONLY valid JSON (no markdown, no code blocks, only json):
     Tasks: ${taskData}
     Attendance: ${attendanceData}
-    provide a summary including: overall performance, works consistency, strengths, area for improvement`
+    
+    Return EXACTLY this JSON structure:
+    {
+      "overallRating": "A/B/C/D",
+      "performanceScore": 0-100,
+      "consistency": "High/Medium/Low",
+      "strengths": ["strength1", "strength2"],
+      "improvements": ["area1", "area2"],
+      "summary": "one sentence summary"
+    }`
 
     const report = await aiResponse(prompt)
 
@@ -142,4 +155,23 @@ export const analyzeAttendance = asyncHandler(async(req, res) => {
     const analysis = await aiResponse(prompt)
 
     res.status(200).json({success : true, message : 'attendance pattern analysis generated successfully', data : analysis})
+})
+
+export const aiChat = asyncHandler(async(req, res) => {
+    const userId = req.user._id
+    const {message} = req.body
+    if(!message || message.trim() === ""){
+        const error = new Error('Message is required')
+        error.statusCode = 400
+        throw error
+    }
+    const aiReply = await aiResponse(message)
+    const chatRecord = await AiChat.create({employee : userId, message, response : aiReply})
+
+    return res.status(200).json({success : true, 
+        data : {
+            reply : aiReply,
+            chatId : chatRecord._id
+        }
+    })
 })

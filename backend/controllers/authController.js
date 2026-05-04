@@ -2,16 +2,20 @@ import asyncHandler from "../middlewares/asyncHandler.js"
 import User from '../models/User.js'
 import bcrypt from 'bcrypt'
 import generateToken from "../utils/JWT.js"
+import { welcomeMail } from "../services/emailService.js"
+
+
 
 export const register = asyncHandler(async (req, res, next) => {
-    const {name, email, password, role} = req.body 
+    const {name, email, password, role, department} = req.body 
     if(!name || !email || !password){
         const error = new Error('all fields are required')
         error.statusCode = 400
         throw error
     }
 
-    const existeduser = await User.findOne({email})
+    const emailNormalized = email.toLowerCase()
+    const existeduser = await User.findOne({email : emailNormalized})
     if(existeduser){
         const error = new Error('user already existed')
         error.statusCode = 409
@@ -19,8 +23,13 @@ export const register = asyncHandler(async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
+    const user = await User.create({name, email : emailNormalized, password : hashedPassword, role, department})
 
-    const user = await User.create({name, email, password : hashedPassword, role})
+    try {
+        await welcomeMail({name : user.name, email : user.email, role : user.role})
+    } catch (error) {
+        console.log('failed to send welcome mail')
+    }
 
     const token = generateToken(user._id, user.role)
 
@@ -29,7 +38,7 @@ export const register = asyncHandler(async (req, res, next) => {
             id : user._id,
             name : user.name,
             email : user.email,
-            role : role || 'employee'
+            role : user.role,
         }
     })
 })
@@ -38,12 +47,13 @@ export const login = asyncHandler(async(req,res) => {
     const {email, password} = req.body
     if(!email || !password){
         const error = new Error('all fields are required')
-        error.statusCode = 401
+        error.statusCode = 400
         throw error
     }
-    const user = await User.findOne({email})
+    const emailNormalized = email.toLowerCase()
+    const user = await User.findOne({email : emailNormalized}).select("+password")
     if(!user){
-        const error = new Error('user not found')
+        const error = new Error('user not found, make sure signup first')
         error.statusCode = 404
         throw error
     }
@@ -56,10 +66,6 @@ export const login = asyncHandler(async(req,res) => {
     }
 
     const token = generateToken(user._id, user.role)
-    
-    user.lastLogin = new Date()
-
-    await user.save()
 
     res.status(200).json({success : true, message : 'logged in successfully', token : token,
         user : {
@@ -72,14 +78,14 @@ export const login = asyncHandler(async(req,res) => {
 })
 
 export const getProfile = asyncHandler(async(req, res) => {
-    const userId = req.user.id
-    const user = await User.findById(userId)
+    const userId = req.user._id
+    const user = await User.findById(userId).select("-password")
     if(!user){
         const error = new Error("user not found")
         error.statusCode = 404
         throw error
     }
-    res.status(200).json({success : true, message : 'user get successfully',
+    res.status(200).json({success : true, message : 'user fetched successfully',
         user : {
             id : user._id,
             name : user.name,
@@ -91,11 +97,5 @@ export const getProfile = asyncHandler(async(req, res) => {
 })
 
 export const logout = asyncHandler(async(req, res) => {
-    const userId = req.user.id
-    const user = await User.findById(userId)
-    if(user){
-        user.lastLogout = new Date()
-        await user.save()
-    }
     res.status(200).json({success : true, message : 'user logged out successfully'})
 })

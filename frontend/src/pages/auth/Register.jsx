@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext.jsx'
-import axiosClient from '../../api/axiosClient.js'
 import { toast } from 'react-toastify'
+import { register } from '../../services/AuthService.js'
 import 'react-toastify/dist/ReactToastify.css'
 
 function Register () {
@@ -28,15 +28,19 @@ function Register () {
         if (!formData.name || !formData.email || !formData.password) {
             return 'all fields are required'
         }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if(!emailRegex.test(formData.email)) {
+            return 'please enter a valid email'
+        }
         if (formData.password.length < 6) {
             return 'password must be at least 6 characters'
         }
         if (formData.password !== formData.confirmPassword) {
             return 'passwords do not match'
         }
-        
         return null
     }
+
     const handleSubmit = async(e) => {
         e.preventDefault()
 
@@ -46,24 +50,13 @@ function Register () {
             toast.error(validationError)
             return
         }
-
         setLoading(true)
         setError(null)
-
         try {
-            const res = await axiosClient.post('/auth/register', {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            role: formData.role,
-            department: formData.department
-            })
-
-            login(res.data)
-
+            const res = await register(formData)
+            login(res)
             toast.success('user registered successfully')
-
-            if (res.data.user.role === 'Admin') {
+            if (res.user?.role.toLowerCase() === 'admin') {
                 navigate('/admin')
             } else {
                 navigate('/employee')
@@ -80,10 +73,11 @@ function Register () {
     }
 
     return (
-      <div className='min-h-screen flex items-center justify-center bg-gray-100 px-4'>
-        <form onSubmit={handleSubmit} className='w-full max-w-md bg-white rounded-xl shadow-md p-6 space-y-5'>
+      <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-100 px-4 '>
+        {/* form  */}
+        <form onSubmit={handleSubmit} className='w-full max-w-md bg-white rounded-2xl border-2 shadow-xl p-8 space-y-6  border-gray-100'>
             <div className='text-center'>
-                <h2 className='text-xl font-semibold text-gray-800'>AstraaHR Registratin</h2>
+                <h2 className='text-xl font-semibold text-gray-800'>WorkSphere Registration</h2>
                 <p className='text-sm text-gray-500'>Create your employee account</p>
             </div>
 
@@ -93,27 +87,27 @@ function Register () {
 
             <div>
                 <label className='text-sm text-gray-700'>Full Name</label>
-                <input name='name' type='text' onChange={handleChange} className='w-full bporder p-2 rounded mt-1' />
+                <input name='name' type='text' autoFocus value={formData.name} onChange={handleChange} className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 focus:bg-white' required />
             </div>
 
             <div>
                 <label className='text-sm text-gray-700'>Email</label>
-                <input name='email' type='email' onChange={handleChange} className='w-full border p-2 rounded mt-1' />
+                <input name='email' type='email' value={formData.email} placeholder='abc@gmail.com' onChange={handleChange} className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 focus:bg-white' required />
             </div>
 
             <div>
                 <label className='text-sm text-gray-700'>Password</label>
-                <input name='password' type='password' onChange={handleChange} className='w-full border p-2 rounded mt-1' />
+                <input name='password' type='password' value={formData.password} onChange={handleChange} className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 focus:bg-white' placeholder='********' required />
             </div>
 
             <div>
                 <label className='text-sm text-gray-700'>Confirm Password</label>
-                <input name='confirmPassword' type='password' onChange={handleChange} className='w-full border p-2 rounded mt-1' />
+                <input name='confirmPassword' type='password' value={formData.confirmPassword} onChange={handleChange} className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 focus:bg-white' placeholder='********' required />
             </div>
 
             <div>
                 <label className='text-sm text-gray-700'>Role</label>
-                <select name='role' onChange={handleChange} className='w-full border p-2 rounded mt-1'>
+                <select name='role' value={formData.role} onChange={handleChange} className='w-full border p-2 rounded mt-1' required>
                     <option value="Employee">Employee</option>
                     <option value="Hr">HR</option>
                     <option value="Admin">Admin</option>
@@ -122,17 +116,16 @@ function Register () {
 
             <div>
                 <label className='text-sm text-gray-700'>Department</label>
-                <input name='department' type='text' onChange={handleChange} className='w-full border p-2 rounded mt-1' />
+                <input name='department' type='text' value={formData.department} onChange={handleChange} className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 focus:bg-white' required />
             </div>
 
-            <button type='submit' className='w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700'>{loading ? 'Registering...' : 'Register'}</button>
+            <button type='submit' className='w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700' disabled={loading}>{loading ? 'Registering...' : 'Register'}</button>
 
             <p className='text-sm text-center text-gray-500'>already have an account?
-                <Link to='/' className='text-blue-600 hover:underline'>login</Link>
+                <Link to='/login' className='text-blue-600 hover:underline'>login</Link>
             </p>
         </form>
       </div>
     )
 }
-
 export default Register
