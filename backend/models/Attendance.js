@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const attendanceSchema = new mongoose.Schema({
     employee : {type : mongoose.Schema.Types.ObjectId, ref : "User", required : true},
-    date : {type : Date, default: Date.now},
+    date : {type : Date, default: () => new Date()},
     checkIn : Date,
     checkOut : Date,
     workHours : {type: Number, default: 0},
@@ -20,6 +20,17 @@ attendanceSchema.pre("save", function(next){
         this.workHours = Math.round((diff / (1000 * 60 * 60)) * 100) / 100
     }
     
+    // late check
+    if(this.checkIn) {
+        const checkInTime = this.checkIn.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false})
+        this.late = checkInTime > this.shiftStart
+    }
+
+    // validate checkin checkOut
+    if(this.checkIn && !this.checkOut) {
+        return next(new Error('checkout is required when checkin exists'))
+    }
+    next()
 })
 
 attendanceSchema.index({employee: 1, date: 1}, {unique: true})
