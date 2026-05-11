@@ -24,7 +24,6 @@ const server = http.createServer(app)
 
 app.use(cors({
     origin : ['http://localhost:5173', 'https://work-sphere-sepia.vercel.app'],
-    // origin : 'http://localhost:5173',
     credentials : true,
 }))
 
@@ -51,7 +50,7 @@ app.use('/api/notifications', notificationRouter)
 app.use('/api/ai', aiRouter)
 
 //socket initialization
-initSocket(server)
+export const io = initSocket(server)
 
 //global error handler
 app.use((err, req, res, next) => {

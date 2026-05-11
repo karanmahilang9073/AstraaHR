@@ -2,6 +2,7 @@ import  { useEffect, useState } from 'react'
 import { deleteTask, getTasks, updateStatus,  } from '../../services/TaskService'
 import TaskCard from '../../components/task/TaskCard'
 import { toast } from 'react-toastify'
+import {useSocket} from '../../context/SocketContext'
 
 function MyTasks() {
     const [tasks, setTasks] = useState([])
@@ -25,6 +26,17 @@ function MyTasks() {
         }
         load()
     },[])
+
+    const {socket} = useSocket()
+
+    useEffect(() => {
+      if(!socket) return
+      socket.on('task-assigned', (newTask) => {
+        setTasks(prev => [newTask, ...prev])
+        toast.success('new task assigned to you')
+      })
+      return () => socket.off('task-assigned')
+    }, [socket])
 
     const handleDelete = async(id) => {
         try {

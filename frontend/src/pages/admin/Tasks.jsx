@@ -4,7 +4,7 @@ import {toast} from 'react-toastify'
 import TaskCard from '../../components/task/TaskCard'
 import {getUsers} from '../../services/userService.js'
 import { recommendTask } from '../../services/AiService.js'
-
+import { useSocket } from '../../context/SocketContext.jsx'
 
 
 function Tasks() {
@@ -24,6 +24,8 @@ function Tasks() {
         assignedTo : ''
     })
 
+    const {socket}  = useSocket()
+
     //fetch task
     useEffect(() => {
       const load = async() => {
@@ -38,6 +40,14 @@ function Tasks() {
       }
       load()
     }, [])
+
+    useEffect(() => {
+      if(!socket) return
+      socket.on('task-assigned', (newTask) => {
+        setTasks(prev => [newTask, ...prev])
+      })
+      return () => socket.off('task-assigned')
+    })
 
     //get users
     useEffect(() => {
