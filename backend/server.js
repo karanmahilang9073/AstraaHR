@@ -20,6 +20,17 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
+// add morgan middlewares
+// add helmet middlewares
+
+// npm install express-rate-limit
+// import rateLimit from 'express-rate-limit'
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100 // limit each IP to 100 requests per windowMs
+// })
+// app.use(limiter)
+
 const server = http.createServer(app)
 
 app.use(cors({
@@ -51,6 +62,10 @@ app.use('/api/ai', aiRouter)
 
 //socket initialization
 export const io = initSocket(server)
+
+app.use((req,res) => {
+    res.status(404).json({success : false, message : 'route not found'})
+})
 
 //global error handler
 app.use((err, req, res, next) => {
