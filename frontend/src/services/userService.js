@@ -1,8 +1,13 @@
 import axiosClient from "../api/axiosClient";
 
 const errorHandler = (error) => {
-    console.error('UserService error', error?.response?.data || error.message);
-    throw error?.response?.data || {message : 'something went wrong'}
+    const errorData = error?.response?.data || {message: error?.message || 'something went wrong'}
+    console.error('UserService error', errorData);
+    return {
+        message: errorData?.message || 'failed to process request',
+        status: error?.response?.status,
+        data: errorData
+    }
 }
 
 //get all users
