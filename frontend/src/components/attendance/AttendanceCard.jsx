@@ -1,25 +1,25 @@
-import React from 'react'
+import { memo } from 'react'
 
 function AttendanceCard({ attendance }) {
 
-  const formatTime = (date) => {
-    if (!date) return 'not recorded'
-    return new Date(date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
-  }
+  if(!attendance) return null;
 
   const workHour = (checkIn, checkOut) => {
-    if(!checkIn) return '0h'
+    if(!checkIn || !checkOut) return 'N/A'
     const diff = new Date(checkOut) - new Date(checkIn)
+    if(diff < 0) return 'invalid'
     const hours = (diff / (1000 * 60 * 60)).toFixed(1)
     if(isNaN(hours)) return 'invalid'
     return `${hours}h`
   }
 
-  if(!attendance) return null;
 
-  const formatDate = (date) => {
-    if(!date) return "invalid date"
-    return new Date(date).toLocaleDateString('en-IN', { month: 'short', day: '2-digit', year: 'numeric' })
+  const formatDateTime = (date, options  = {}) => {
+    if(!date) return options.type === 'time' ? 'not recorded' : 'invalid date'
+    if(options.type === 'time') {
+      return new Date(date).toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'})
+    }
+    return new Date(date).toLocaleDateString('en-IN', {month: '2-digit', year: 'numeric'})
   }
 
   const statusColor = {
@@ -41,7 +41,7 @@ function AttendanceCard({ attendance }) {
       <div className="flex justify-between items-start mb-3">
         <div>
           <p className="text-sm text-gray-500">Date</p>
-          <p className="text-lg font-semibold">{formatDate(attendance.date)}</p>
+          <p className="text-lg font-semibold">{formatDateTime(attendance.date)}</p>
         </div>
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor[attendance.status?.toLowerCase()] || statusColor.absent}`}>{attendance.status?.toUpperCase()}</span>
       </div>
@@ -49,11 +49,11 @@ function AttendanceCard({ attendance }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-gray-50 p-3 rounded">
           <p className="text-xs text-gray-500 mb-1">Check-in</p>
-          <p className="font-semibold text-sm">{formatTime(attendance.checkIn)}</p>
+          <p className="font-semibold text-sm">{formatDateTime(attendance.checkIn, {type: 'time'})}</p>
         </div>
         <div className="bg-gray-50 p-3 rounded">
           <p className="text-xs text-gray-500 mb-1">Check-out</p>
-          <p className="font-semibold text-sm">{formatTime(attendance.checkOut)}</p>
+          <p className="font-semibold text-sm">{formatDateTime(attendance.checkOut, {type: 'time'})}</p>
         </div>
         <div className="bg-blue-50 p-3 rounded col-span-2">
           <p className="text-xs text-gray-500 mb-1">Hours worked</p>
@@ -65,4 +65,4 @@ function AttendanceCard({ attendance }) {
   )
 }
 
-export default AttendanceCard
+export default memo(AttendanceCard)
