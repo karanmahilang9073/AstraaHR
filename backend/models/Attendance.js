@@ -14,23 +14,20 @@ const attendanceSchema = new mongoose.Schema({
     approvedBy : {type: mongoose.Schema.Types.ObjectId, ref : "User"}
 }, {timestamps: true})
 
-attendanceSchema.pre("save", function(next){
+attendanceSchema.pre("save", function(){
+    // validate checkin checkOut
+    if(this.checkOut && !this.checkIn) {
+        throw new Error('checkIn is required before checkOut')
+    }
     if(this.checkIn && this.checkOut){
         const diff = this.checkOut - this.checkIn
         this.workHours = Math.round((diff / (1000 * 60 * 60)) * 100) / 100
     }
-    
     // late check
     if(this.checkIn) {
         const checkInTime = this.checkIn.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false})
         this.late = checkInTime > this.shiftStart
     }
-
-    // validate checkin checkOut
-    if(this.checkIn && !this.checkOut) {
-        return next(new Error('checkout is required when checkin exists'))
-    }
-    next()
 })
 
 attendanceSchema.index({employee: 1, date: 1}, {unique: true})

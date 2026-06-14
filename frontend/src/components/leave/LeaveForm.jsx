@@ -81,12 +81,12 @@ function LeaveForm() {
             {/* end date */}
             <div>
                 <label className='block text-sm mb-1'>end date</label>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className='w-full border p-2 rounded' placeholder='select end date'  />
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={today} className='w-full border p-2 rounded' placeholder='select end date'  />
             </div>
 
             {endDate && startDate && (
                 <p className="text-sm text-gray-600 mt-2">
-                    <span className='font-semibold'>{totaldays(startDate, endDate)}</span>
+                    <span className='font-semibold'>{totaldays(startDate, endDate)} days</span> leave requested
                 </p>
             )}
 
