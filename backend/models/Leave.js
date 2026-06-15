@@ -19,13 +19,11 @@ leaveSchema.pre('save', function(next){
   if(this.endDate < this.startDate){  
     return next(new Error('end date cannot be before start date'))
   }
-
   // calculate total days
   if(this.startDate && this.endDate) { 
     const diff = this.endDate - this.startDate
     this.totalDays = diff / (1000 * 60 * 60 * 24) + 1
   }
-  next()
 })
 
 leaveSchema.index({employee : 1, status : 1, startDate: 1, endDate : 1})
