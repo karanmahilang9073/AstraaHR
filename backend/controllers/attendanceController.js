@@ -133,9 +133,13 @@ export const getAllAttendance = asyncHandler(async(req, res) => {
         error.statusCode = 403
         throw error
     }
-    const records = await Attendance.find().populate('employee', 'name email role department').sort({ date: -1 }).lean()
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const records = await Attendance.find().populate('employee', 'name email role department').sort({ date: -1 }).skip((page - 1) * limit).limit(limit).lean()
 
-    res.status(200).json({success: true, count: records.length, attendance: records})
+    const total = await Attendance.countDocuments()
+
+    res.status(200).json({success: true, attendance: records, currentPage: page, totalPages: Math.ceil(total/limit), totalRecords: total})
 })
 
 export const markAbsent = asyncHandler(async (req, res) => {
