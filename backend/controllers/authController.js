@@ -5,11 +5,16 @@ import generateToken from "../utils/JWT.js"
 import { welcomeMail } from "../services/emailService.js"
 
 
-
 export const register = asyncHandler(async (req, res, next) => {
     const {name, email, password, role, department} = req.body 
     if(!name || !email || !password){
         const error = new Error('all fields are required')
+        error.statusCode = 400
+        throw error
+    }
+
+    if(password.length < 6) {
+        const error = new Error('password must be atleast 6 characters')
         error.statusCode = 400
         throw error
     }
@@ -53,14 +58,14 @@ export const login = asyncHandler(async(req,res) => {
     const emailNormalized = email.toLowerCase()
     const user = await User.findOne({email : emailNormalized}).select("+password")
     if(!user){
-        const error = new Error('user not found, make sure signup first')
+        const error = new Error('invalid credentials')
         error.statusCode = 404
         throw error
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
     if(!isMatch){
-        const error = new Error('password do not match, please try again...')
+        const error = new Error('passwords do not match, please try again...')
         error.statusCode = 401
         throw error
     }
@@ -91,6 +96,7 @@ export const getProfile = asyncHandler(async(req, res) => {
             name : user.name,
             email : user.email,
             department : user.department,
+            role: user.role,
             position : user.position
         }
     })

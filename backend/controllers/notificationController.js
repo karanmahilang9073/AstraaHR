@@ -9,8 +9,8 @@ export const createNotification = asyncHandler(async(req, res) => {
         error.statusCode = 400
         throw error
     }
-    if(!['Hr','Admin','hr','admin'].includes(req.user.role)) {
-        const error = new Error('not authorized')
+    if(!['HR','Admin'].includes(req.user.role)) {
+        const error = new Error('unauthorized')
         error.statusCode = 403
         throw error
     }
@@ -20,7 +20,7 @@ export const createNotification = asyncHandler(async(req, res) => {
         error.statusCode= 404
         throw error
     }
-    const validType = ['leave','task','salary']
+    const validType = ['leave','task','salary','general']
     if(type && !validType.includes(type)) {
         const error = new Error('invalid notification type')
         error.statusCode = 400
@@ -32,7 +32,10 @@ export const createNotification = asyncHandler(async(req, res) => {
 
 export const getMyNotifications = asyncHandler(async(req, res) => {
     const userId = req.user._id
-    const notifications = await Notification.find({ recipient: userId}).sort({createdAt: -1})
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 20
+    const skip = (page - 1) * limit
+    const notifications = await Notification.find({ recipient: userId}).sort({createdAt: -1}).skip(skip).limit(limit)
     res.status(200).json({ success: true, message : 'notification fetched successfully', count: notifications.length, notifications})
 })
 
@@ -42,8 +45,9 @@ export const markAsRead = asyncHandler(async(req, res) => {
         { _id : notificationId, recipient : req.user._id}, 
         {isRead : true}, 
         {returnDocument : 'after'})
+        .populate("recipient", "name email")
     if (!notification) {
-        const error = new Error('notification not found or not authorized')
+        const error = new Error('notification not found or unauthorized')
         error.statusCode = 404
         throw error
     }
@@ -64,8 +68,8 @@ export const deleteNotification = asyncHandler(async(req, res) => {
         error.statusCode = 404
         throw error
     }
-    if(notification.recipient.toString() !== req.user._id.toString() && !['Admin','Hr'].includes(req.user.role)) {
-        const error = new Error('not authorized')
+    if(notification.recipient.toString() !== req.user._id.toString() && !['Admin','HR'].includes(req.user.role)) {
+        const error = new Error('unauthorized')
         error.statusCode = 403
         throw error
     }

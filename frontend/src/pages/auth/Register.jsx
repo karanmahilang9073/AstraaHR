@@ -62,9 +62,7 @@ function Register () {
                 navigate('/employee')
             }
         } catch (err) {
-            const message =
-              err.response?.data?.message || 'registration failed'
-            
+            const message = err.message || 'registration failed'
             setError(message)
             toast.error(message)
         } finally {

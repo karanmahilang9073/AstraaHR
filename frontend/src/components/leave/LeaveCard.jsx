@@ -1,13 +1,19 @@
-import React from 'react'
+import { memo } from 'react'
 
 function LeaveCard({leave, onApprove, onReject}) {
+
+    if(!leave) return null;
+
     const status = {
         pending : 'bg-yellow-100 text-yellow-700',
         approved : 'bg-green-100 text-green-700',
         rejected : 'bg-red-100 text-red-700'
     }
 
-    if(!leave) return null;
+    const isValidDateRange = (startDate, endDate) => {
+        if(!startDate || !endDate) return false
+        return new Date(endDate) > new Date(startDate)
+    }
 
     const formatDate = (date) => {
         if(!date) return 'invalid date'
@@ -27,7 +33,11 @@ function LeaveCard({leave, onApprove, onReject}) {
         </div>
 
         {/* date range */}
-        <div className="mb-3 text-sm text-gray-600">{formatDate(leave.startDate)} - {formatDate(leave.endDate)}</div>
+        {!isValidDateRange(leave.startDate, leave.endDate) ? (
+            <p className="text-red-500 text-sm">Invalid date range</p>
+        ) : (
+            <div className="mb-3 text-sm text-gray-600">{formatDate(leave.startDate)} - {formatDate(leave.endDate)}</div>
+        )}
 
         {/* reason */}
         {leave.reason && (
@@ -46,4 +56,4 @@ function LeaveCard({leave, onApprove, onReject}) {
   )
 }
 
-export default LeaveCard
+export default memo(LeaveCard)

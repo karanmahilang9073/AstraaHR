@@ -82,7 +82,7 @@ export const checkout= asyncHandler(async(req, res) => {
         throw error
     }
     if(!attendance.checkIn) {
-        const error = new Error('inalid check-in record')
+        const error = new Error('invalid check-in record')
         error.statusCode = 400
         throw error
     }
@@ -94,9 +94,9 @@ export const checkout= asyncHandler(async(req, res) => {
     attendance.workHours = Number(hours.toFixed(2))
 
     //overtime
-    const OVERTME_THRESHOLD = 8
-    if (attendance.workHours > OVERTME_THRESHOLD) {
-        attendance.overtimeHours = Number((attendance.workHours - OVERTME_THRESHOLD).toFixed(2))
+    const OVERTIME_THRESHOLD = 8
+    if (attendance.workHours > OVERTIME_THRESHOLD) {
+        attendance.overtimeHours = Number((attendance.workHours - OVERTIME_THRESHOLD).toFixed(2))
     }
     await attendance.save()
      res.status(200).json({ success: true, message: 'Check-out successful', attendance })
@@ -112,7 +112,7 @@ export const getMyAttendance = asyncHandler(async(req, res) => {
     month = parseInt(month)
     year = parseInt(year)
     if(!month || !year || month < 1 || month > 12 || isNaN(year)){
-        const error = new Error('invalid month (1-12) ans year required')
+        const error = new Error('invalid month (1-12) and year required')
         error.statusCode = 400
         throw error
     }
@@ -128,14 +128,18 @@ export const getMyAttendance = asyncHandler(async(req, res) => {
 })
 
 export const getAllAttendance = asyncHandler(async(req, res) => {
-    if (!["Admin","Hr"].includes(req.user.role)) {
-        const error = new Error('Not authorized')
+    if (!["Admin","HR"].includes(req.user.role)) {
+        const error = new Error('unauthorized')
         error.statusCode = 403
         throw error
     }
-    const records = await Attendance.find().populate('employee', 'name email role department').sort({ date: -1 }).lean()
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const records = await Attendance.find().populate('employee', 'name email role department').sort({ date: -1 }).skip((page - 1) * limit).limit(limit).lean()
 
-    res.status(200).json({success: true, count: records.length, attendance: records})
+    const total = await Attendance.countDocuments()
+
+    res.status(200).json({success: true, attendance: records, currentPage: page, totalPages: Math.ceil(total/limit), totalRecords: total})
 })
 
 export const markAbsent = asyncHandler(async (req, res) => {
@@ -146,8 +150,8 @@ export const markAbsent = asyncHandler(async (req, res) => {
         throw error
     }
 
-    if(!['Hr','Admin'].includes(req.user.role)) {
-        const error = new Error('not authorized to mark absent')
+    if(!['HR','Admin'].includes(req.user.role)) {
+        const error = new Error('unauthorized to mark absent')
         error.statusCode = 403
         throw error
     }

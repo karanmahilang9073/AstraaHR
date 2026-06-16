@@ -1,4 +1,5 @@
 import axios from "axios"
+import {toast} from 'react-toastify'
 
 const axiosClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -8,9 +9,19 @@ const axiosClient = axios.create({
     timeout: 10000,
 })
 
-axiosClient.interceptors.request.use(
-    (config) => {
+const isValidToken = (token) => {
+    if(!token) return false
+    return token.includes('.') && token.split('.').length === 3
+}
+
+axiosClient.interceptors.request.use((config) => {
         const token = localStorage.getItem("token")
+
+        if(token && !isValidToken(token)) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            window.location.href = '/login'
+        }
 
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`
@@ -27,13 +38,34 @@ axiosClient.interceptors.response.use(
         return response
     },
     (error) => {
+        const config = error.config;
+        if(!config){
+            return Promise.reject(error)
+        }
+        config.retryCount = config.retryCount || 0
+
+        // retry only on timeout max 2 times
+        if(config.retryCount < 2 && (!error.response || error.code === 'ECONNABORTED')){
+            config.retryCount++;
+            return new Promise(resolve => setTimeout(() => resolve(axiosClient(config)),2000)) // wait 2 seconds
+        }
+
+        // error handling
         if(!error.response) {
-            console.error('server not reachable')
+            toast.error('Network error - server not reachable')
+        }
+
+        if(error.response?.status === 403){
+            window.location.href = '/unauthorized'
         }
         if (error.response?.status === 401 && window.location.pathname !== '/login') {
             localStorage.removeItem("token");
             localStorage.removeItem('user')
             window.location.href = "/login";
+        }
+
+        if(error.response?.status >= 500){
+            toast.error('server error - please try again later')
         }
 
         return Promise.reject(error)

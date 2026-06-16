@@ -4,8 +4,8 @@ import User from "../models/User.js"
 
 // get users
 export const getUsers = asyncHandler(async(req, res) => {
-    if(!['Hr','Admin','hr','admin'].includes(req.user.role)) {
-        const error = new Error('not authorized')
+    if(!['HR','Admin'].includes(req.user.role)) {
+        const error = new Error('unauthorized')
         error.statusCode = 403
         throw error
     }
@@ -38,8 +38,25 @@ export const updateUser = asyncHandler(async(req, res) => {
     }
 
     if (req.user._id.toString() !== user._id.toString() && req.user.role !== "Admin") {
-        const error = new Error('not authorized')
+        const error = new Error('unauthorized')
         error.statusCode = 403
+        throw error
+    }
+
+    if(name && !name.trim()) {
+        const error = new Error('name cannot be empty')
+        error.statusCode = 400
+        throw error
+    }
+
+    if(email && !email.includes('@')) {
+        const error = new Error('invalid email format')
+        error.statusCode = 400
+        throw error
+    }
+    if(department && !department.trim()) {
+        const error = new Error('department cannot be empty')
+        error.statusCode = 400
         throw error
     }
 
@@ -47,8 +64,8 @@ export const updateUser = asyncHandler(async(req, res) => {
         const emailNormalized = email.toLowerCase()
         const existing = await User.findOne({email : emailNormalized})
         if(existing && existing._id.toString() !== userId){
-            const error = new Error('not authorized')
-            error.statusCode = 403
+            const error = new Error('email already in use')
+            error.statusCode = 409
             throw error
         }
         user.email = emailNormalized
@@ -58,6 +75,7 @@ export const updateUser = asyncHandler(async(req, res) => {
     if (req.user.role === "Admin" && role) {
         user.role = role
     }
+
 
     await user.save()
     res.status(200).json({ success: true, message:  "User updated successfully", 

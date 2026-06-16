@@ -6,8 +6,8 @@ const leaveRouter = express.Router()
 
 leaveRouter.post('/apply', authMiddleware, applyLeave)
 leaveRouter.get('/',authMiddleware, getLeaves)
+leaveRouter.put('/revoke/:id', authMiddleware, revokeLeave)
 leaveRouter.patch('/:id/status', authMiddleware, updateLeaveStatus)
-leaveRouter.put('/revoke/:id', revokeLeave)
-leaveRouter.delete('/:id', deleteLeave)
+leaveRouter.delete('/:id', authMiddleware, deleteLeave)
 
 export default leaveRouter

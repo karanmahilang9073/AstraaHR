@@ -12,7 +12,7 @@ export const welcomeMail = async({name, email, role}) => {
             html : welcomeTemplate({name, email, role})
         })
     } catch (error) {
-        console.log('email error', error.message)
+        console.error('email error', error.message)
         throw error
     }
 }
@@ -35,7 +35,7 @@ export const taskAssignMail = async({user, task}) => {
 export const leaveApprovedMail = async({user, leave}) => {
     const transporter = getTransporter()
     try {
-        await transporter.sendMail({
+        return await transporter.sendMail({
             from : process.env.EMAIL_USER,
             to : user.email,
             subject : 'your leave has been approved ✅',
@@ -50,7 +50,7 @@ export const leaveApprovedMail = async({user, leave}) => {
 export const leaveRejectedMail = async({user, leave}) => {
     const transporter = getTransporter()
     try {
-        await transporter.sendMail({
+        return await transporter.sendMail({
             from : process.env.EMAIL_USER,
             to : user.email,
             subject : 'your leave request was rejected ❌',

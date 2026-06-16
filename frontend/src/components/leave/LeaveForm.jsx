@@ -10,6 +10,16 @@ function LeaveForm() {
     const [reason, setReason] = useState('')
     const [loading, setLoading] = useState(false)
 
+    // to prevent date selection before that day 
+    const today = new Date().toISOString().split('T')[0]
+
+    // calculate total days
+    const totaldays = (start, end) => {
+        if(!start || !end) return 0
+        const diff = new Date(end) - new Date(start)
+        return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1 
+    }
+
     const handleSubmit = async(e) => {
         e.preventDefault()
         if(!leaveType || !startDate || !endDate || !reason.trim()){
@@ -65,14 +75,20 @@ function LeaveForm() {
             {/* start date */}
             <div>
                 <label className='block text-sm mb-1'>start date</label>
-                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className='w-full border p-2 rounded' placeholder='select start date' />
+                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} min={today} className='w-full border p-2 rounded' placeholder='select start date' />
             </div>
 
             {/* end date */}
             <div>
                 <label className='block text-sm mb-1'>end date</label>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className='w-full border p-2 rounded' placeholder='select end date'  />
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={today} className='w-full border p-2 rounded' placeholder='select end date'  />
             </div>
+
+            {endDate && startDate && (
+                <p className="text-sm text-gray-600 mt-2">
+                    <span className='font-semibold'>{totaldays(startDate, endDate)} days</span> leave requested
+                </p>
+            )}
 
             {/* reason */}
             <div>

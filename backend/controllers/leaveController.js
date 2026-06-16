@@ -47,16 +47,6 @@ export const applyLeave = asyncHandler(async(req, res) => {
     await leave.save()
     await leave.populate('employee', "name email")
 
-    try {
-        if(status === 'approved'){
-            await leaveApprovedMail({user: leave.employee, leave})
-        } else if(status === 'rejected'){
-            await leaveRejectedMail({user : leave.employee, leave})
-        }
-    } catch (error) {
-        console.log('leave email failed', error)
-    }
-
     res.status(201).json({success: true, message: 'leave applied successfully', leave})
 })
 
@@ -80,7 +70,7 @@ export const updateLeaveStatus = asyncHandler(async(req, res) => {
         error.statusCode = 404
         throw error
     }
-    if(!['Hr','Admin','hr','admin'].includes(req.user.role)) {
+    if(!['HR','Admin'].includes(req.user.role)) {
         const error = new Error('you are not authorized to update leave status')
         error.statusCode = 403
         throw error
@@ -140,13 +130,15 @@ export const deleteLeave = asyncHandler(async(req, res) => {
         throw error
     }
     
-    if(leave.employee.toString() !== req.user._id.toString() && !['Hr','Admin'].includes(req.user.role)) {
+    if(leave.employee.toString() !== req.user._id.toString() && !['HR','Admin'].includes(req.user.role)) {
         const error = new Error('you are not authorized to delete leave')
         error.statusCode = 403
         throw error
     }
     if(leave.status !== "pending") {
         const error = new Error('only pending leave can be deleted')
+        error.statusCode = 400
+        throw error
     }
     await leave.deleteOne()
     res.status(200).json({success: true, message: "leave deleted successfully"})
