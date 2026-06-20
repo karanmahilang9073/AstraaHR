@@ -53,12 +53,20 @@ export const applyLeave = asyncHandler(async(req, res) => {
 export const getLeaves = asyncHandler(async (req, res) => {
     let leaves
     const employeeId = req.user._id 
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const skip = (page - 1) * limit;
+    let totalRecords
+
     if(req.user.role === "Employee") {
+        totalRecords = await Leave.countDocuments({employee: employeeId})
         leaves = await Leave.find({employee : employeeId}).populate("employee", "name email role").sort({createdAt : -1})
     } else {
-        leaves = await Leave.find().populate("employee", "name email role").sort({createdAt : -1})
+        totalRecords = await Leave.countDocuments();
+        leaves = await Leave.find().populate("employee", "name email role").sort({createdAt : -1}).skip(skip).limit(limit)
     }
-    res.status(200).json({success: true, count: leaves.length, leaves})
+    res.status(200).json({success: true, leaves, currentPage: page, totalPages: Math.ceil(totalRecords / limit), totalRecords})
 })
 
 export const updateLeaveStatus = asyncHandler(async(req, res) => {

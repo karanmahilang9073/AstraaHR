@@ -35,10 +35,10 @@ export const getMyAttendance = async(month, year) => {
     }
 }
 
-export const getAllAttendance = async() => {
+export const getAllAttendance = async(page = 1, limit = 10) => {
     try {
-        const res = await axiosClient.get('/attendance')
-        return res.data.attendance
+        const res = await axiosClient.get(`/attendance?page=${page}&limit=${limit}`)
+        return res.data
     } catch (error) {
         return errorHandler(error)
     }

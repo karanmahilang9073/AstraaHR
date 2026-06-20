@@ -84,7 +84,7 @@ function LeaveForm() {
                 <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={today} className='w-full border p-2 rounded' placeholder='select end date'  />
             </div>
 
-            {endDate && startDate && (
+            {endDate && startDate && ( 
                 <p className="text-sm text-gray-600 mt-2">
                     <span className='font-semibold'>{totaldays(startDate, endDate)} days</span> leave requested
                 </p>

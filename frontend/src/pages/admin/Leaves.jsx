@@ -12,13 +12,17 @@ function Leaves() {
 
     const [aiLeave, setAiLeave] = useState('')
 
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+
     useEffect(() => {
         const fetch = async() => {
             setLoading(true)
             setError(null)
             try {
-                const res = await getLeaves()
-                setLeaves(res)
+                const res = await getLeaves(page, 8)
+                setLeaves(res.leaves)
+                setTotalPages(res.totalPages)
             } catch (error) {
                 console.error('error while loading leaves', error)
                 toast.error('failed to fetch leaves')
@@ -27,7 +31,7 @@ function Leaves() {
             }
         }
         fetch()
-    }, [])
+    }, [page])
 
     const handleApprove = async(leaveId) => {
         setError(null)
@@ -107,6 +111,14 @@ function Leaves() {
                     <button onClick={() => analyze(l)} className='bg-indigo-500 text-white py-1 rounded'>Analyze AI</button>
                     </div>
                 ))}
+            </div>
+        )}
+
+        {!loading && !error && leaves.length > 0 && (
+            <div className="flex justify-center items-center gap-4 mt-6">
+                <button onClick={() => setPage(page - 1)} disabled={page == 1} className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'>prev</button>
+                <span>page {page} of {totalPages}</span>
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'>next</button>
             </div>
         )}
 
