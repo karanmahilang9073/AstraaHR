@@ -9,6 +9,9 @@ function Attendance() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
   const [aiAttendance, setAiAttendance] = useState("");
 
   useEffect(() => {
@@ -16,8 +19,9 @@ function Attendance() {
       setLoading(true);
       setError(null);
       try {
-        const res = await getAllAttendance();
-        setAttendance(res || []);
+        const res = await getAllAttendance(page, 10);
+        setAttendance(res.attendance);
+        setTotalPages(res.totalPages)
       } catch (error) {
         console.error("error while loading attendance", error);
         setError("failed to load attendances");
@@ -27,7 +31,7 @@ function Attendance() {
       }
     };
     fetchAttendance();
-  }, []);
+  }, [page]);
 
   const handleAttendance = async () => {
     setLoading(true);
@@ -44,17 +48,14 @@ function Attendance() {
   };
 
   return (
-    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="p-6 flex flex-col lg:flex-row gap-6 ">
 
       {/* header */}
-      <div className="lg:col-span-2">
+      <div className="flex-1">
         <h2 className="text-xl font-semibold">All attendance</h2>
 
         {/* ai attendance analyze */}
-        <button
-          onClick={handleAttendance}
-          className="bg-indigo-500 text-white px-4 py-2 rounded mb-4"
-        >
+        <button onClick={handleAttendance} className="bg-indigo-500 text-white px-4 py-2 rounded mb-4">
           Analyze attendance (AI)
         </button>
 
@@ -77,16 +78,27 @@ function Attendance() {
 
         {/* attendance grid */}
         {!loading && !error && attendance.length > 0 && (
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
             {attendance.map((a) => (
               <AttendanceCard key={a._id} attendance={a} />
             ))}
           </div>
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button onClick={() => setPage(page - 1)} disabled={page === 1} className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
+              prev
+            </button>
+            <span>page {page} of {totalPages}</span>
+            <button onClick={() => setPage(page + 1)} disabled={page === totalPages} className=" px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
+              next
+            </button>
+          </div>
+          </>
         )}
       </div>
 
       {/* attendance report */}
-      <div className="bg-white p-4 rounded shadow h-150 overflow-y-auto">
+      <div className="bg-white p-4 rounded shadow lg:w-85 h-150 overflow-y-auto shrink-8">
         <h3 className="font-semibold mb-2">AI insights</h3>
         {aiAttendance ? (
             <p className="text-sm whitespace-pre-wrap">{aiAttendance}</p>
@@ -94,7 +106,6 @@ function Attendance() {
             <p className="text-gray-400 text-sm">click analyze to see insights</p>
         )}
       </div>
-
     </div>
   );
 }

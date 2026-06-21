@@ -17,10 +17,10 @@ export const applyLeave = async(leaveData) => {
 }
 
 //get all leaves
-export const getLeaves = async() => {
+export const getLeaves = async(page = 1, limit = 8) => {
     try {
-        const res = await axiosClient.get('/leaves')
-        return res.data.leaves
+        const res = await axiosClient.get(`/leaves?page=${page}&limit=${limit}`)
+        return res.data
     } catch (error) {
         throw errorHandler(error)
     }

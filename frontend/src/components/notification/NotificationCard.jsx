@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 import { deleteNotification, markAsRead } from '../../services/NotificationService'
 
 function NotificationCard({notification, onUpdate, onDelete}) {
@@ -81,4 +81,4 @@ function NotificationCard({notification, onUpdate, onDelete}) {
   )
 }
 
-export default NotificationCard
+export default memo(NotificationCard)
