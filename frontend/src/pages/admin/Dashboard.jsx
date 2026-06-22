@@ -41,9 +41,9 @@ function Dashboard() {
     }
 
   return (
-    <div className='flex'>
+    <div className='flex h-screen'>
 
-        <div className="w-3/4 p-6 bg-gray-100">
+        <div className="flex-1 p-6 bg-gray-100 overflow-y-auto">
 
         {/* left side - dashboard */}
         {/* header */}
@@ -90,9 +90,11 @@ function Dashboard() {
         </div>
 
         {/* right side chatboax */}
-        <div className="w-1/4 p-4 bg-white shadow h-screen">
+        <div className="w-80 p-4 bg-white shadow flex flex-col h-120">
             <h2 className="text-xl font-semibold mb-3">AI assistant</h2>
-            <ChatBox />
+            <div className="flex-1 min-h-0">
+                <ChatBox />
+            </div>
         </div>
 
         
