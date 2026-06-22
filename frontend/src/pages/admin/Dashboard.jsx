@@ -21,7 +21,7 @@ function Dashboard() {
                 const [userRes, taskRes, leaveRes] = await Promise.all([getUsers(), getTasks(), getLeaves()])
                 setTotalEmployees(userRes.length)
                 setTasks(taskRes)
-                setPendingLeaves(leaveRes.filter(l => l.status === 'pending').length)
+                setPendingLeaves(leaveRes.leaves.filter(l => l.status === 'pending').length)
             } catch (error) {
                 console.error('error while fetching stats', error)
                 toast.error('failed to fetch stats')
