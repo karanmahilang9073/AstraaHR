@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
-import { useNavigate, NavLink, Outlet } from 'react-router-dom'
+import { useNavigate, NavLink, Outlet, Link } from 'react-router-dom'
 import {LayoutDashboard, Users, Calendar, Clock, ListTodo, DollarSign, BarChart3, LogOut, User} from 'lucide-react'
 
 export default function AdminLayout() {
-  const {  logout } = useContext(AuthContext)
+  const { user,  logout } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -26,6 +26,11 @@ export default function AdminLayout() {
           <NavLink to="/admin/tasks" className={({isActive}) => `block p-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'} flex gap-2`}><ListTodo/>Tasks</NavLink>
           <NavLink to="/admin/compensation" className={({isActive}) => `block p-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'} flex gap-2`}><DollarSign/>Compensation</NavLink>
           <NavLink to="/admin/analytics" className={({isActive}) => `block p-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'} flex gap-2`}><BarChart3/>Analytics</NavLink>
+          {user?.role === "Admin" && (
+              <Link to="/admin/create-user" className="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700">
+                Create User
+              </Link>
+          )}
         </nav>
       </aside>
 

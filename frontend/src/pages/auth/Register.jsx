@@ -11,7 +11,7 @@ function Register () {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'Employee',
+        // role: 'Employee',
         department: ''
     })
     const [error, setError] = useState(null)
@@ -181,7 +181,7 @@ function Register () {
                         </div>
 
                         <div className="grid gap-5 sm:grid-cols-2">
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-200">Role</label>
                                 <select
                                     name='role'
@@ -194,7 +194,7 @@ function Register () {
                                     <option value="Hr">HR</option>
                                     <option value="Admin">Admin</option>
                                 </select>
-                            </div>
+                            </div> */}
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-200">Department</label>

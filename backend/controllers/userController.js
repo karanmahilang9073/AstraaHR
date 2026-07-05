@@ -1,6 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js"
 import User from "../models/User.js"
-
+import bcrypt from 'bcrypt'
 
 // get users
 export const getUsers = asyncHandler(async(req, res) => {
@@ -104,4 +104,53 @@ export const deleteUser = asyncHandler(async(req, res) => {
     }
     await user.deleteOne()
     res.status(200).json({ success : true, message: 'user deleted successfully'})
+})
+
+export const createUserByAdmin = asyncHandler(async(req, res) => {
+    if(req.user.role !== 'Admin'){
+        const error = new Error('only admin can create user')
+        error.statusCode = 403
+        throw error
+    }
+
+    const {name, email, password, department, role} = req.body
+    if(!name || !email || !password || !role){
+        const error = new Error('all fields are required')
+        error.statusCode = 400
+        throw error
+    }
+
+    if(!['HR', 'Admin'].includes(role)){
+        const error = new Error('invalid role')
+        error.statusCode= 400
+        throw error
+    }
+
+    if(password.length < 6){
+        const error = new Error('password must be at least 6 chaaracter')
+        error.statusCode = 400
+        throw error
+    }
+
+    const emailNormalized = email.toLowerCase()
+    const existingUser = await User.findOne({email: emailNormalized})
+    if(existingUser){
+        const error = new Error('user already exists')
+        error.statusCode = 409
+        throw error
+    }
+
+    const hasehdpas = await bcrypt.hash(password, 10)
+
+    const user = await User.create({name, email: emailNormalized, password: hasehdpas, department: department || 'General', role})
+
+    res.status(201).json({success: true, message: 'user created successfully', 
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            department: user.department
+        }
+    })
 })

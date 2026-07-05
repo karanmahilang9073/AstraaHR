@@ -29,6 +29,8 @@ import Compensations from './pages/admin/Compensation'
 import Analytics from './pages/admin/Analytics'
 import Profile from './pages/admin/Profile'
 import EmpAnalytics from './pages/admin/EmpAnalytics'
+import CreateUser from './pages/admin/CreateUser'
+
 
 
 export default function App() {
@@ -61,7 +63,7 @@ export default function App() {
       </Route>
 
       {/* Admin Routes */}
-      <Route element={<ProtectedRoutes role="Admin"><AdminLayout /></ProtectedRoutes>}>
+      <Route element={<ProtectedRoutes role={["Admin","HR"]}><AdminLayout /></ProtectedRoutes>}>
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/employees" element={<Employees />} />
           <Route path="/admin/attendance" element={<Attendance />} />
@@ -71,6 +73,8 @@ export default function App() {
           <Route path="/admin/analytics" element={<Analytics />} />
           <Route path='/admin/profile' element={<Profile/>} />
           <Route path='/admin/employee-analytics/:employeeId' element={<EmpAnalytics/>} />
+          <Route path='/admin/create-user' element={<CreateUser/>} />
+
       </Route>
 
 

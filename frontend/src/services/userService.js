@@ -49,3 +49,13 @@ export const deleteUser = async(id) => {
      throw errorHandler(error)   
     }
 }
+
+//create user
+export const createUser = async(data) =>{
+    try {
+        const res = await axiosClient.post('/users/create', data)
+        return res.data
+    } catch (error) {
+        throw errorHandler(error)
+    }
+}

@@ -34,7 +34,11 @@ function Login() {
       const res = await loginService(formData)
       login(res)
       toast.success('welcome back to AstraaHR')
-      navigate(res.user.role === 'Admin' ? '/admin' : '/employee')
+      if (res.user.role === 'Admin' || res.user.role === 'HR') {
+        navigate('/admin')
+      }else {
+        navigate('/employee')
+      }
     } catch (error) {
       const message = error?.message || error || 'login failed'
       setError(message)
