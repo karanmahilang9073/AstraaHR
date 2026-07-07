@@ -47,8 +47,7 @@ export default function App() {
       <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
       <Route path="/unauthorized" element={<Unauthorized />} />
 
-      
-      <Route path="/" element={user ? user.role === "Admin" ? <Navigate to="/admin" /> : <Navigate to="/employee" /> : <Navigate to="/login" />}/>
+      <Route path="/" element={user ? user.role === "Admin" || user.role === "HR" ? <Navigate to="/admin" /> : <Navigate to="/employee" /> : <Navigate to="/login" />}/>
 
       {/* Employee Routes */}
       <Route element={<ProtectedRoutes role="Employee"><EmployeeLayout /></ProtectedRoutes>}>
