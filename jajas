@@ -1,0 +1,229 @@
+[33mcommit d4170fbc4611bdddf83fa9ff44aa2fc43eca9153[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelopment[m[33m, [m[1;31morigin/development[m[33m)[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue Jul 7 19:11:19 2026 +0530
+
+    fix: HR login redirected to unauthorized bug fixed
+
+[33mcommit 766b108f822bf157f3c453cf27343ba3d2afe429[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Jul 5 14:18:07 2026 +0530
+
+    role base authentication improved
+
+[33mcommit 0ebf99be0c01dbc4711b143861ab15f8fa462b12[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Jul 5 11:01:37 2026 +0530
+
+    login and register page ui improved
+
+[33mcommit ca9b65aabe63d3397a92369fd7406e022d4613f4[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon Jun 22 20:44:48 2026 +0530
+
+    frontend: ai assistant layout fixxed
+
+[33mcommit 16128f2e51ff566c2346b43fa817079093a5be7a[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon Jun 22 19:50:31 2026 +0530
+
+    frontend: stats fetching bug fixed
+
+[33mcommit 6b013dc9c0243eb8e95bbd39dcd32c0b03bd9ae4[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sat Jun 20 15:16:35 2026 +0530
+
+    admin: pagination added in leave section
+
+[33mcommit 454cba638b06911960bd1c52bea9e2b93d03e09b[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sat Jun 20 14:17:57 2026 +0530
+
+    frontend: attendance card layout imoroved
+
+[33mcommit c4fbcd9cfe9ea3f6bb18a6084cd8189c9d4cc704[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon Jun 15 16:24:08 2026 +0530
+
+    backend fixed
+
+[33mcommit 7963b6fa9f940c3335414b7f606a0062cb6e2fe4[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon Jun 15 16:23:00 2026 +0530
+
+    backend: admin attendance pagination added
+
+[33mcommit 48aa0bb24c270bf0e204a98f221560112d0bd698[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Jun 14 15:05:49 2026 +0530
+
+    frontend: error messsage while registering fixed
+
+[33mcommit fd6fe88d0a97e5b479140075936a7d44df6c45ec[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Jun 14 14:04:01 2026 +0530
+
+    backend: next is not a fuction fixed in Atteendance model
+
+[33mcommit 65b46105fe27281f102e1aaba413b289f0bcd14f[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Thu May 14 16:05:37 2026 +0530
+
+    leaveform immproved
+
+[33mcommit 1188dadf1dfe0afc8d445763afa03452572d576f[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Thu May 14 15:51:58 2026 +0530
+
+    frontend: leave card improved
+
+[33mcommit ef64ae0695d69a6a5fb0035a9ab9cdbb0b6c2a63[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Thu May 14 15:40:40 2026 +0530
+
+    attendance card optimized
+
+[33mcommit 0413be416392b7e7642e099b1c97748f79d95a4a[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Wed May 13 14:06:36 2026 +0530
+
+    frontend: socketcontext and ai chatbox optimized
+
+[33mcommit c47b4c5ad45e52d20035b87a6bbc6c1ce337e3a7[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Wed May 13 12:23:51 2026 +0530
+
+    frontend: backend axios backend called optimized and authcontext improved
+
+[33mcommit 33836185111a5fb3f80b0497e8522b5bbdaeee7e[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue May 12 15:52:57 2026 +0530
+
+    backend: backend debugges
+
+[33mcommit 8f1e246fae172534aab1292a36805c0bce6fc838[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue May 12 15:45:17 2026 +0530
+
+    backend: ai services improved
+
+[33mcommit 7e406bc48630a67344e6dd1b1eee8631a65e2efb[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue May 12 15:38:23 2026 +0530
+
+    backend: routes consistency improved
+
+[33mcommit de4ec582f10a7b15d2f21382d55f5db2acd03807[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue May 12 15:28:40 2026 +0530
+
+    middleware improved
+
+[33mcommit c15aa0541fa525e2f8ce895ef6946121be5e3395[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Tue May 12 15:24:33 2026 +0530
+
+    all controller consistency improved
+
+[33mcommit 8785f122d6d5c2c7b8f9c9abbbd85cc93efaca21[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon May 11 14:00:21 2026 +0530
+
+    attendance model optimized
+
+[33mcommit bb3118a79b569153b06b14d94c9336471abf9f49[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon May 11 13:49:50 2026 +0530
+
+    leave model optimized
+
+[33mcommit 340940e35aa32d4607d16da81bbde07d5ea7fe2f[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon May 11 13:41:02 2026 +0530
+
+    salary model optimized
+
+[33mcommit 48db12f2142e7683bcd36e2372e2abd07ffa573b[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon May 11 13:33:44 2026 +0530
+
+    task model optimized
+
+[33mcommit 063cadffd28191c25939f5a38fed62ba1a8421ff[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon May 11 13:25:32 2026 +0530
+
+    user model optimized
+
+[33mcommit 5a8ea3b570ec4837062f2bcd3d0efe3f69d57e9f[m
+Merge: 1a95fb9 d29e3bc
+Author: Sanjiv Kumar Patel <156161026+SanjivKumarPatel@users.noreply.github.com>
+Date:   Wed May 6 23:12:03 2026 +0530
+
+    mongodb uri improved
+    
+    mongodb uri improved
+
+[33mcommit d29e3bca0d1cd7f0f77897af6ba11f13a50b69f9[m
+Author: SanjivKumarPatel <sanjivpatel00001@gmail.com>
+Date:   Wed May 6 23:09:33 2026 +0530
+
+    mongodb uri modified
+
+[33mcommit 6fdb075a98ab4130f641190bcbfb1109bb854106[m
+Merge: 4e8da15 1a95fb9
+Author: SanjivKumarPatel <sanjivpatel00001@gmail.com>
+Date:   Mon May 4 22:24:02 2026 +0530
+
+     fix issues
+
+[33mcommit 1a95fb9dfcab4623af395b956fc2884eef0f066b[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Mon Apr 27 16:48:11 2026 +0530
+
+    deployment link changed
+
+[33mcommit a516efc877f4c2040b762cf7365f20efa79d78ec[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Wed Apr 22 18:41:44 2026 +0530
+
+    frontend: login page payout fixed
+
+[33mcommit 61f064b89f40873a999ed1c1659d32a248e3f57f[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Wed Apr 22 17:59:21 2026 +0530
+
+    frontend: project name enhanced
+
+[33mcommit 113eecca174eeef98d5007ac49e7272718eac780[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Wed Apr 22 17:54:01 2026 +0530
+
+    backend: project name changes
+
+[33mcommit 82ca7fab61afa992f9d536f55e708973e04faa08[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Apr 19 15:59:06 2026 +0530
+
+    employee: extraa important details are added in dashboard card
+
+[33mcommit 9c22c55cff1a6bcd85e85a43f6e6717bf3464a23[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Apr 19 15:51:55 2026 +0530
+
+    employee : all card fixed
+
+[33mcommit 227cb8cab2328fba727c51d4e4a16c47666aff6b[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Apr 19 14:11:04 2026 +0530
+
+    employee: attendance card unknown name fixed and in employee dashboard card adjustment done
+
+[33mcommit b6f6f726e0d116c78fb94ee2e79ca25bf19effc7[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sun Apr 19 13:09:31 2026 +0530
+
+    employee: dashboard card improved
+
+[33mcommit effbf82527811289ccc4915036acc23ffba823be[m
+Author: Karan Mahilang <156161187+karanmahilang9073@users.noreply.github.com>
+Date:   Sat Apr

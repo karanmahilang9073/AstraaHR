@@ -1,11 +1,11 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import { getUsers } from '../../services/userService'
 import { getTasks } from '../../services/TaskService'
 import { getLeaves } from '../../services/LeaveService'
 import {toast} from 'react-toastify'
 import {Link} from 'react-router-dom'
 import ChatBox from '../../components/ai/ChatBox'
-
+import { AuthContext } from '../../context/AuthContext'
 
 
 function Dashboard() {
@@ -13,6 +13,8 @@ function Dashboard() {
     const [tasks, setTasks] = useState([])
     const [pendingLeaves, setPendingLeaves] = useState(0)
     const [loading, setLoading] = useState(true)
+
+    const {user} = useContext(AuthContext)
 
     useEffect(() => {
         const fetchStats = async() => {
@@ -47,7 +49,7 @@ function Dashboard() {
 
         {/* left side - dashboard */}
         {/* header */}
-        <h1 className='text-3xl font-bold mb-5'>Admin dashboard</h1>
+        <h1 className='text-3xl font-bold mb-5'>Welcome, {user?.name}</h1>
 
         {/* stat grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

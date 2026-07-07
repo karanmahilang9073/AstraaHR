@@ -16,7 +16,9 @@ export default function AdminLayout() {
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 text-white p-4 h-screen fixed left-0 top-0">
-        <h2 className="text-2xl font-bold mb-8">WorkSphere Admin</h2>
+        <h2 className="text-2xl font-bold mb-8">
+          WorkSphere, {user?.role}
+        </h2>
         <hr className="border-t border-gray-300 my-4" />
         <nav className="space-y-4">
           <NavLink to="/admin" className={({isActive}) => `block p-2 rounded ${isActive ? 'bg-gray-700' : 'hover:bg-gray-700'} flex gap-2`}>< LayoutDashboard size={20}/>Dashboard</NavLink>
@@ -38,7 +40,9 @@ export default function AdminLayout() {
       <main className="flex-1 ml-64 overflow-y-auto">
         {/* Navbar */}
         <nav className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
-          <h1 className="text-xl font-semibold">Admin Panel</h1>
+          <h1 className="text-xl font-semibold">
+            {user?.role} panel
+          </h1>
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/admin/profile')} className='flex items-center gap-2 text-gray-700 hover:text-blue-600 p-2 rounded hover:bg-gray-100'>
               <User size={20}/>
