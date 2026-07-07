@@ -9,7 +9,12 @@ export const getUsers = asyncHandler(async(req, res) => {
         error.statusCode = 403
         throw error
     }
-    const users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1})
+    let users
+    if (req.user.role === "Admin") {
+        users = await User.find({_id: {$ne: req.user._id}}).select("-password").sort({createdAt: -1})
+    } else {
+        users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1})
+    }
     res.status(200).json({ success: true, count: users.length, users})
 })
 
@@ -37,8 +42,13 @@ export const updateUser = asyncHandler(async(req, res) => {
         throw error
     }
 
-    if (req.user._id.toString() !== user._id.toString() && req.user.role !== "Admin") {
-        const error = new Error('unauthorized')
+    if(req.user.role === "Employee" && req.user._id.toString() !== user._id.toString()){
+        const error = new Error("unauthorized")
+        error.statusCode = 403
+        throw error
+    }
+    if (req.user.role === "HR" && user.role !== "Employee") {
+        const error = new Error("unauthorized")
         error.statusCode = 403
         throw error
     }
@@ -100,6 +110,11 @@ export const deleteUser = asyncHandler(async(req, res) => {
     if ( !user) {
         const error = new Error('user not found')
         error.statusCode = 404
+        throw error
+    }
+    if (user.role === "Admin") {
+        const error = new Error("cannot delete another admin")
+        error.statusCode = 403
         throw error
     }
     await user.deleteOne()
