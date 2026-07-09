@@ -40,7 +40,7 @@ export const createTask = async(taskData) => {
 //update task
 export const updateTask = async(id, updatedData) => {
     try {
-        const res = await axiosClient.put(`/tasks/${id}`,updatedData)
+        const res = await axiosClient.put(`/tasks/update-task/${id}`,updatedData)
         return res.data.data
     } catch (error) {
         throw errorHandler(error)
@@ -50,7 +50,7 @@ export const updateTask = async(id, updatedData) => {
 //update status
 export const updateStatus = async(id, status) => {
     try {
-        const res = await axiosClient.put(`/tasks/update-status/${id}/status`, {status})
+        const res = await axiosClient.put(`/tasks/update-status/${id}`, {status})
         return res.data.data
     } catch (error) {
         throw errorHandler(error)
