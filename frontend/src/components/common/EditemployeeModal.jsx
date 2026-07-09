@@ -60,7 +60,7 @@ function EditemployeeModal({show, onClose, employee, onSave}) {
             </div>
 
             <div className='mb-3'>
-                <input type="text" name='role' value={formData.role} onChange={handleChange} disabled placeholder='Role' className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500' />
+                <input type="text" name='role' value={formData.role} onChange={handleChange} disabled placeholder='Role' className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 opacity-60' />
                 {error.role && <p key="error-role" className='text-red-500 text-sm mt-1'>{error.role}</p>}
             </div>
 

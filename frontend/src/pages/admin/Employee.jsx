@@ -1,10 +1,10 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import { getUsers, updateUser, deleteUser } from '../../services/userService'
 import { toast } from 'react-toastify'
 import EditemployeeModal from '../../components/common/EditemployeeModal'
 import { useNavigate } from 'react-router-dom'
 import { getPerformance } from '../../services/AiService'
-
+import { AuthContext } from '../../context/AuthContext'
 
 
 function Employee() {
@@ -18,6 +18,8 @@ function Employee() {
     const [viewModal, setViewModal] = useState(false)
 
     const [aiPerformance, setAiPerformance] = useState('')
+
+    const {user} = useContext(AuthContext)
 
     const navigate = useNavigate()
 
@@ -120,11 +122,11 @@ function Employee() {
                     {/* table head */}
                     <thead className='bg-gray-100 text-left'>
                         <tr>
-                            <th className='p-3 border-b'>Name</th>
-                            <th className='p-3 border-b'>Email</th>
-                            <th className='p-3 border-b'>Department</th>
-                            <th className='p-3 border-b'>Role</th>
-                            <th className='p-3 border-b'>Action</th>
+                           <th className='p-3 border-b'>Name</th>
+                           <th className='p-3 border-b'>Email</th>
+                           <th className='p-3 border-b'>Department</th>
+                           <th className='p-3 border-b'>Role</th>
+                           <th className='p-3 border-b'>Action</th>
                         </tr>
                     </thead>
                     
@@ -137,10 +139,14 @@ function Employee() {
                             <td className='p-3 border-b'>{emp.department}</td>
                             <td className='p-3 border-b'>{emp.role}</td>
                             <td className="p-3 border-b">
+                                {user?.role === "Admin" && (
+                                    <>
+                                    <button onClick={() => handleDelete(emp._id)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
+                                    <button onClick={() => navigate(`/admin/employee-analytics/${emp._id}`)} className='bg-purple-500 text-white px-2 py-1 rounded mr-2 text-sm'>view analytics</button>
+                                    </>
+                                )}
                                 <button onClick={() => handleView(emp)} className='bg-blue-500 text-white px-2 py-1 rounded mr-2 text-sm'>View</button>
                                 <button onClick={() => {setSelectedEmployee(emp); setShowModal(true)}} className='bg-yellow-500 text-white px-2 py-1 rounded text-sm mr-2'>edit</button>
-                                <button onClick={() => handleDelete(emp._id)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
-                                <button onClick={() => navigate(`/admin/employee-analytics/${emp._id}`)} className='bg-purple-500 text-white px-2 py-1 rounded mr-2 text-sm'>view analytics</button>
                                 <button onClick={() => {handlePerformance(emp._id); setSelectedEmployee(emp)}} className='bg-indigo-500  text-white px-2 py-1 rounded text-sm mr-2'>AI report</button>
                             </td>
                         </tr>
@@ -184,7 +190,6 @@ function Employee() {
         
       <EditemployeeModal show={showModal} onClose={() => setShowModal(false)} employee={selectedEmployee} onSave={handleEdit} />
 
-        
     </div>
   )
 }
