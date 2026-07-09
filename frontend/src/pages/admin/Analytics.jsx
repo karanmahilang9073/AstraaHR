@@ -36,11 +36,11 @@ function Analytics() {
                 // total employees
                 const totalEmployees = user.length 
                 // attendance %
-                const present = attendance.filter(a => a.status === "present").length
+                const present = attendance.attendance.filter(a => a.status === "present").length
                 const attendancePercentage = attendance.length > 0 ? ((present / attendance.length) * 100).toFixed(1) : 0
                 // leave stats
-                const approvedLeave = leave.filter(l => l.status ===  'approved').length
-                const pendingLeave = leave.filter(l => l.status ===  'pending').length
+                const approvedLeave = leave.leaves.filter(l => l.status ===  'approved').length
+                const pendingLeave = leave.leaves.filter(l => l.status ===  'pending').length
                 // task stats
                 const completedTask = task.filter(t => t.status === "completed").length
                 const pendingTask = task.filter(t => t.status !== "completed").length
