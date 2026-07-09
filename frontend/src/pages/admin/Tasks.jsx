@@ -182,7 +182,7 @@ function Tasks() {
       ) : (
         <div className='grid gap-4'>
           {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} onDelete={handleDelete} onComplete={handleComplete} />
+            <TaskCard key={task._id} task={task} onDelete={handleDelete} onComplete={handleComplete} onEdit={setEditTask} />
           ))}
         </div>
       )}
