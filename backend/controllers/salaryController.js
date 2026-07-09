@@ -185,29 +185,3 @@ export const getSalaryByEmployee = asyncHandler(async(req, res) => {
     res.status(200).json({success : true, message : 'salaries fetched successfully', count : salaries.length, salaries })
 })
 
-export const deleteSalary = asyncHandler(async(req, res) => {
-    const salaryId = req.params.id 
-
-    if(!['HR','Admin'].includes(req.user.role)) {
-        const error = new Error('unauthorized to delete salary')
-        error.statusCode = 403
-        throw error
-    }
-
-    const salary = await Salary.findById(salaryId)
-    if(!salary){
-        const error = new Error('salary not found')
-        error.statusCode = 404
-        throw error
-    }
-
-    if(salary.status !== "pending") {
-        const error = new Error('only pending salaries can be deleted')
-        error.statusCode = 403
-        throw error
-    }
-
-    await Salary.findByIdAndDelete(salaryId)
-
-    res.status(200).json({success : true, message : 'salary deleted successfully'})
-})

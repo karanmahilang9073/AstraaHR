@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { getSalaries, deleteSalary, updateStatus } from '../../services/SalaryService'
+import { getSalaries,  updateStatus } from '../../services/SalaryService'
 import SalaryCard from '../../components/salary/SalaryCard'
 import {toast} from 'react-toastify'
 import SalaryModal from '../../components/salary/SalaryModal'
@@ -33,20 +33,6 @@ function Compensation() {
         }
         fetch()
     }, [])
-
-    const handleDelete = async(salaryId) => {
-        setError(null)
-        try {
-            await deleteSalary(salaryId)
-            setSalaries(prev => prev.filter(s => s._id !== salaryId))
-            toast.success('salary deleted successfully')
-        } catch (error) {
-            console.error('error while deleting salary', error)
-            toast.error('failed to delete salary')
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const handleStatus = async(salaryId, currentStatus) => {
         setError(null)
@@ -112,8 +98,9 @@ function Compensation() {
                         <SalaryCard salary={salary} onStatusUpdate={handleStatus}  />
                         <div className='flex gap-2'>
                             <button onClick={() => setEditingSalary(salary)} disabled={salary.status === 'paid'} className={`flex-1 py-1 rounded ${salary.status === 'paid' ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white'}`}>Edit</button>
-                            <button onClick={() => handleDelete(salary._id)} className='flex-1 bg-red-500 text-white py-1 rounded'>Delete</button>
-                            <button onClick={() => handlePredict(salary.employee)} className='bg-indigo-500 text-white py-1 rounded'>Predict salary</button>
+                            {salary.status !== "paid" && (
+                                <button onClick={() => handlePredict(salary.employee)} className='bg-indigo-500 text-white py-1 rounded'>Predict salary</button>
+                            )}
                         </div>
                     </div>
                 ))}

@@ -65,13 +65,3 @@ export const getSalaryByEmployee = async(employeeId) => {
         throw errorHandler(error)
     }
 }
-
-//delete salary
-export const deleteSalary = async(id) => {
-    try {
-        const res = await axiosClient.delete(`/salary/${id}`)
-        return res.data
-    } catch (error) {
-        throw errorHandler(error)
-    }
-}
