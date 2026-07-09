@@ -15,7 +15,7 @@ function MyLeaves() {
             setLoading(true)
             try {
                 const res = await getLeaves()
-                setLeaves(res)
+                setLeaves(res.leaves)
             } catch (error) {
                 console.error('error fetching leaves', error)
                 toast.error('failed to fetch leaves')

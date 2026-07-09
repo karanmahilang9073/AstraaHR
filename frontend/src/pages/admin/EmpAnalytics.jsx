@@ -27,8 +27,8 @@ function EmpAnalytics() {
                 ])
                 // filter by current employees
                 const empTasks = taskRes.filter(t => t.assignedTo && t.assignedTo._id === employeeId)
-                const empLeaves = leaveRes.filter(l => l.employee && l.employee._id === employeeId)
-                const empAttendance = attendanceRes.filter(a => a.employee && a.employee._id === employeeId)
+                const empLeaves = leaveRes.leaves.filter(l => l.employee && l.employee._id === employeeId)
+                const empAttendance = attendanceRes.attendance.filter(a => a.employee && a.employee._id === employeeId)
                 // const empSalaries = salaryRes.filter(s => s.employee._id === employeeId)
                 const empSalaries = []
                
