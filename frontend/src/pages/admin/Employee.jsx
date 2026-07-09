@@ -122,11 +122,11 @@ function Employee() {
                     {/* table head */}
                     <thead className='bg-gray-100 text-left'>
                         <tr>
-                           <th className='p-3 border-b'>Name</th>
-                           <th className='p-3 border-b'>Email</th>
-                           <th className='p-3 border-b'>Department</th>
-                           <th className='p-3 border-b'>Role</th>
-                           <th className='p-3 border-b'>Action</th>
+                            <th className='p-3 border-b'>Name</th>
+                            <th className='p-3 border-b'>Email</th>
+                            <th className='p-3 border-b'>Department</th>
+                            <th className='p-3 border-b'>Role</th>
+                            <th className='p-3 border-b'>Action</th>
                         </tr>
                     </thead>
                     

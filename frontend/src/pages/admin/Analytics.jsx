@@ -133,7 +133,7 @@ function Analytics() {
             </div>
 
             {/* avg salary */}
-            <div className="bg-white shadow rounded-xl p-5">
+            <div className="bg-white shadow rounded-xl p-5 w-40">
                 <h2 className="text-gray-500 text-sm">Avg Salary</h2>
                 <p className="text-2xl font-bold mt-2">
                     ₹{stats?.salary?.average}
