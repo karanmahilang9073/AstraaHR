@@ -56,7 +56,7 @@ function Dashboard() {
 
             {/* employee */}
             <div className="bg-white p-5 rounded-xl shadow">
-                <h2 className="text-gray-500">Total Employee</h2>
+                <h2 className="text-gray-500">Total {user.role === "Admin" ? "users" : "Employees"}</h2>
                 <p className="text-2xl font-bold">{totalEmployees}</p>
             </div>
             
@@ -79,7 +79,9 @@ function Dashboard() {
             <h2 className="text-xl font-semibold mb-4">quick actions</h2>
 
             <div className="flex flex-wrap gap-4">
-                <Link to='/admin/employees' className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700'>Employees</Link>
+                <Link to='/admin/employees' className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700'>
+                    {user.role === "Admin" ? "users" : "Employee"}
+                </Link>
 
                 <Link to='/admin/tasks' className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700'>Tasks</Link>
 
