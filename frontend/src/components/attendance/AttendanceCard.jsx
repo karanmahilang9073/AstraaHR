@@ -6,10 +6,13 @@ function AttendanceCard({ attendance }) {
 
   const workHour = (checkIn, checkOut) => {
     if(!checkIn || !checkOut) return 'N/A'
+
     const diff = new Date(checkOut) - new Date(checkIn)
     if(diff < 0) return 'invalid'
+
     const hours = (diff / (1000 * 60 * 60)).toFixed(1)
     if(isNaN(hours)) return 'invalid'
+
     return `${hours}h`
   }
 
@@ -19,7 +22,7 @@ function AttendanceCard({ attendance }) {
     if(options.type === 'time') {
       return new Date(date).toLocaleTimeString('en-IN', {hour: '2-digit', minute: '2-digit'})
     }
-    return new Date(date).toLocaleDateString('en-IN', {month: '2-digit', year: 'numeric'})
+    return new Date(date).toLocaleDateString('en-IN', {day: "2-digit", month: 'long', year: 'numeric'})
   }
 
   const statusColor = {
