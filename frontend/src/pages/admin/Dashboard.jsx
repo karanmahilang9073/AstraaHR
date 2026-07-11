@@ -41,6 +41,14 @@ function Dashboard() {
         year: "numeric"
     })
 
+    const hour = new Date().getHours()
+    let greeting = "Good Evening";
+    if(hour < 12){
+        greeting = "Good Morning";
+    } else if(hour < 16){
+        greeting = "Good Afternoon";
+    }
+
     if(loading){
         return (
             <div className="flex justify-center items-center h-screen">
@@ -57,7 +65,7 @@ function Dashboard() {
         {/* left side - dashboard */}
         {/* header */}
         <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-2xl font-bold">👋Welcome back, {user.name}!</h2>
+            <h2 className="text-2xl font-bold">👋{greeting}, {user.name}!</h2>
             <p className="text-gray-600 mt-2">Role: {user.role}</p>
             <p className="text-gray-800 text-sm ">Today: {today}</p>
         </div>
@@ -92,7 +100,7 @@ function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link to='/admin/employees' className='bg-blue-200 border border-blue-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
                     <h3 className="text-lg font-semibold text-blue-700">👥 {user.role === "Admin" ? "users" : "Employees"}</h3>
-                    <p className="text-sm text-gray-600 mt-2">Manage {user.role == "Admin" ? "Users" : "Employees"}</p>
+                    <p className="text-sm text-gray-600 mt-2">Manage {user.role === "Admin" ? "Users" : "Employees"}</p>
                 </Link>
 
                 <Link to='/admin/tasks' className='bg-green-50 border border-green-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
