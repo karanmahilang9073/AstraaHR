@@ -34,6 +34,13 @@ function Dashboard() {
         fetchStats()
     }, [])
 
+    const today = new Date().toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    })
+
     if(loading){
         return (
             <div className="flex justify-center items-center h-screen">
@@ -49,10 +56,14 @@ function Dashboard() {
 
         {/* left side - dashboard */}
         {/* header */}
-        <h1 className='text-3xl font-bold mb-5'>Welcome, {user?.name}</h1>
+        <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold">👋Welcome back, {user.name}!</h2>
+            <p className="text-gray-600 mt-2">Role: {user.role}</p>
+            <p className="text-gray-800 text-sm ">Today: {today}</p>
+        </div>
 
         {/* stat grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 mt-10">
 
             {/* employee */}
             <div className="bg-white p-5 rounded-xl shadow">

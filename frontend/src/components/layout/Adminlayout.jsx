@@ -15,7 +15,7 @@ export default function AdminLayout() {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-900 text-white p-4 h-screen fixed left-0 top-0">
+      <aside className="w-64 bg-gray-900 text-white p-3 h-screen fixed left-0 top-0">
         <h2 className="text-2xl font-bold mb-8">
           WorkSphere, {user?.role}
         </h2>
