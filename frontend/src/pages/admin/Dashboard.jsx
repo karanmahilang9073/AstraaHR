@@ -89,16 +89,26 @@ function Dashboard() {
         <div className="bg-white p-6 rounded-xl shadow">
             <h2 className="text-xl font-semibold mb-4">quick actions</h2>
 
-            <div className="flex flex-wrap gap-4">
-                <Link to='/admin/employees' className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700'>
-                    {user.role === "Admin" ? "users" : "Employee"}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Link to='/admin/employees' className='bg-blue-200 border border-blue-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
+                    <h3 className="text-lg font-semibold text-blue-700">👥 {user.role === "Admin" ? "users" : "Employees"}</h3>
+                    <p className="text-sm text-gray-600 mt-2">Manage {user.role == "Admin" ? "Users" : "Employees"}</p>
                 </Link>
 
-                <Link to='/admin/tasks' className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700'>Tasks</Link>
+                <Link to='/admin/tasks' className='bg-green-50 border border-green-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
+                    <h3 className="text-lg font-semibold text-green-700">📋 Tasks</h3>
+                    <p className="text-sm text-gray-600 mt-2">Assign and Manage Tasks</p>
+                </Link>
 
-                <Link to='/admin/leaves' className='bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700'>Leaves</Link>
+                <Link to='/admin/leaves' className='bg-yellow-50 border border-yellow-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
+                    <h3 className="text-lg font-semibold text-yellow-700">🏖 Leaves</h3>
+                    <p className="text-sm text-gray-600 mt-2">Review and requests</p>
+                </Link>
 
-                <Link to='/admin/compensation' className='bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-700'>compensation</Link>
+                <Link to='/admin/compensation' className='bg-purple-50 border border-purple-200 rounded-xl p-5 hover:shadow-lg transition min-h-40 flex flex-col justify-between'>
+                    <h3 className="text-lg font-semibold text-purple-700">💰 Compensation</h3>
+                    <p className="text-sm text-gray-600 mt-2">Manage Employee Salaries</p>
+                </Link>
             </div>
         </div>
 
