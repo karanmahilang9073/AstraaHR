@@ -13,7 +13,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 text-white p-3 h-screen fixed left-0 top-0">
         <h2 className="text-2xl font-bold mb-8">
@@ -37,7 +37,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 overflow-y-auto">
+      <main className="flex-1 ml-64 min-h-screen">
         {/* Navbar */}
         <nav className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
           <h1 className="text-xl font-semibold">
