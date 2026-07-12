@@ -65,7 +65,7 @@ function SalaryModal({onClose}) {
                 <select name="employee" value={formData.employee} onChange={handleChange} className='w-full border px-3 py-2'>
                     <option value="">Select Employee</option>
                     {employees.map(emp => (
-                        <option value={emp._id} key={emp._id}>{emp.name}</option>
+                        <option value={emp._id} key={emp._id}>{emp.name} ({emp.role})</option>
                     ))}
                 </select>
             </div>

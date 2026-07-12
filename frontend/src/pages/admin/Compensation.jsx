@@ -93,7 +93,7 @@ function Compensation() {
         {/* salary grid */}
         {!loading && !error && salaries.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {salaries.map((salary) => (
+                {[...salaries].sort((a,b) => new Date(b.month) - new Date(a.month)).map((salary) => (
                     <div key={salary._id} className='flex flex-col gap-2'>
                         <SalaryCard salary={salary} onStatusUpdate={handleStatus}  />
                         <div className='flex gap-2'>
