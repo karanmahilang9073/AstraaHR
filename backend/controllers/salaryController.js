@@ -34,7 +34,7 @@ export const createSalary =  asyncHandler(async(req, res) => {
     const monthDate = new Date(month)
     
     const salary = await Salary.create({employee, baseSalary, allowance, deduction, month : monthDate})
-    await salary.populate("employee", "name email")
+    await salary.populate("employee", "name email role")
 
     try {
         if(salary.status === 'paid'){
@@ -57,7 +57,7 @@ export const getAllSalaries = asyncHandler(async(req, res) => {
         filters.employee = req.user._id
     }
 
-    const salaries = await Salary.find(filters).populate("employee", "name email").sort({month : -1})
+    const salaries = await Salary.find(filters).populate("employee", "name email role").sort({month : -1})
 
     res.status(200).json({success : true, count : salaries.length,  data : salaries})
 })
@@ -65,7 +65,7 @@ export const getAllSalaries = asyncHandler(async(req, res) => {
 export const getSalary = asyncHandler(async(req,res) => {
     const salaryId = req.params.id 
 
-    const salary = await Salary.findById(salaryId).populate("employee", "name email")
+    const salary = await Salary.findById(salaryId).populate("employee", "name email role")
     if(!salary){
         const error = new Error('salary not found')
         error.statusCode = 404

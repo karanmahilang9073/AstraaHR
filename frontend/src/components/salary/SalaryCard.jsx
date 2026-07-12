@@ -25,7 +25,7 @@ function SalaryCard({salary, onStatusUpdate}) {
         </div>
 
         <p className="text-sm text-gray-600 mb-3">
-            Employee: <span className="font-semibold">{salary.employee?.name}  {salary.employee?.role}</span>
+            USER: <span className="font-semibold">{salary.employee?.name}  ({salary.employee?.role})</span>
         </p>
 
         {/* net salary */}
