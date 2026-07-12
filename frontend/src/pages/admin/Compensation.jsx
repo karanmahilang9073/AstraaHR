@@ -15,6 +15,9 @@ function Compensation() {
     const [showModal, setShowModal] = useState(false)
     const [editingSalary, setEditingSalary] = useState(null)
 
+    const [totalPages, setTotalPages] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
+
     const [aiResult, setAiresult] = useState("")
 
     useEffect(() => {
@@ -22,8 +25,9 @@ function Compensation() {
             setLoading(true)
             setError(null)
             try {
-                const res = await getSalaries()
-                setSalaries(res)
+                const res = await getSalaries(currentPage, 4)
+                setSalaries(res.salaries)
+                setTotalPages(res.totalPages)
             } catch (error) {
                 console.error('error while loading salaries', error)
                 toast.error('failed to fetch salaries')
@@ -32,7 +36,7 @@ function Compensation() {
             }
         }
         fetch()
-    }, [])
+    }, [currentPage])
 
     const handleStatus = async(salaryId, currentStatus) => {
         setError(null)
@@ -106,6 +110,14 @@ function Compensation() {
                 ))}
             </div>
         )}
+
+        <div className="flex justify-center items-center gap-4 mt-6">
+            <button onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1} className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">prev</button>
+
+            <span>Page {currentPage} of {totalPages}</span>
+
+            <button onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage === totalPages} className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50">Next</button>
+        </div>
 
         {/* predicted salary */}
         {aiResult && (

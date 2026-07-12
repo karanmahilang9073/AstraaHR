@@ -57,9 +57,14 @@ export const getAllSalaries = asyncHandler(async(req, res) => {
         filters.employee = req.user._id
     }
 
-    const salaries = await Salary.find(filters).populate("employee", "name email role").sort({month : -1})
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 8
 
-    res.status(200).json({success : true, count : salaries.length,  data : salaries})
+    const total = await Salary.countDocuments(filters)
+
+    const salaries = await Salary.find(filters).populate("employee", "name email role").sort({month : -1}).skip((page - 1) * limit).limit(limit)
+
+    res.status(200).json({success : true, salaries, currentPage: page, totalPages: Math.ceil(total / limit), totalRecords: total})
 })
 
 export const getSalary = asyncHandler(async(req,res) => {
