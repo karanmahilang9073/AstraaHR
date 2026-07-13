@@ -36,7 +36,7 @@ function AttendanceCard({ attendance }) {
       
       {/* employee name */}
       <div className="text-sm text-gray-600 mb-1">
-        <span className="font-semibold text-gray-800">{attendance.employee?.name || 'unknown'}</span>
+        <span className="font-semibold text-gray-800">{attendance.employee?.name || 'Removed users'}</span>
         <span className="text-xs text-gray-500 ml-2">({attendance.employee?.department || 'N/A'})</span>
       </div>
 
