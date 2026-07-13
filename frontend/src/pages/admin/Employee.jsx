@@ -19,6 +19,7 @@ function Employee() {
     const [selectedEmployee, setSelectedEmployee] = useState(null)
     const [searchEmp, setSearchEmp] = useState('')
     const [viewModal, setViewModal] = useState(false)
+    const [deleteEmployee, setDeleteEmployee] = useState(null)
 
     const [aiPerformance, setAiPerformance] = useState('')
 
@@ -146,7 +147,7 @@ function Employee() {
                             <td className="p-3 border-b">
                                 {user?.role === "Admin" && (
                                     <>
-                                    <button onClick={() => handleDelete(emp._id)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
+                                    <button onClick={() => setDeleteEmployee(emp)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
                                     <button onClick={() => navigate(`/admin/employee-analytics/${emp._id}`)} className='bg-purple-500 text-white px-2 py-1 rounded mr-2 text-sm'>view analytics</button>
                                     </>
                                 )}
@@ -172,6 +173,23 @@ function Employee() {
             </button>
         </div>
 
+        {/* delete confirmation */}
+        {deleteEmployee && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-md">
+                    <h2 className="text-xl font-semibold">Delete Employee</h2>
+                    <p className="text-gray-600 mb-6">
+                        Are you sure want to delete this employee? <span className="font-semibold">{deleteEmployee.name}</span>
+                    </p>
+                    <div className="flex justify-end gap-3">
+                        <button onClick={() => setDeleteEmployee(null)} className='px-4 py-2 border rounded hover:bg-gray-100'>Cancel</button>
+                        <button onClick={() => {handleDelete(deleteEmployee._id); setDeleteEmployee(null)}} className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'>Delete</button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* AI insights */}
         {aiPerformance && (
             <div className="mt-4 p-4 bg-gray-100 rounded">
                 <h3 className="font-semibold">AI performance report for:- {selectedEmployee?.name}</h3>
