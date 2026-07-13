@@ -38,7 +38,7 @@ function Dashboard() {
         ]);
         setTask(taskRes || []);
         setAttendance(attendanceRes || []);
-        setSalary(salaryRes || []);
+        setSalary(salaryRes.salaries || []);
         setLeaves(leaveRes.leaves || []);
       } catch (error) {
         console.error("dashboard fetch error", error);
