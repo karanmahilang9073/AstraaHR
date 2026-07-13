@@ -12,6 +12,9 @@ function Employee() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
+    const [currentPage, setCurentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+
     const [showModal, setShowModal] =  useState(false)
     const [selectedEmployee, setSelectedEmployee] = useState(null)
     const [searchEmp, setSearchEmp] = useState('')
@@ -30,8 +33,10 @@ function Employee() {
             setLoading(true)
             setError(null)
             try {
-                const res = await getUsers()
-                setEmployees(res)
+                const res = await getUsers(currentPage, 10)
+                console.log(res.users)
+                setEmployees(res.users)
+                setTotalPages(res.totalPages)
             } catch (error) {
                 console.error('error while fetcing employees', error)
                 toast.error('failed to fetch employees')
@@ -40,7 +45,7 @@ function Employee() {
             }
         }
         fetchData()
-    }, [])
+    }, [currentPage])
 
     const handleEdit = async( data) => {
         setError(null)
@@ -155,6 +160,17 @@ function Employee() {
                 </table>
             </div>  
         )}
+
+        {/* pagination */}
+        <div className="flex justify-center items-center gap-4 mt-6">
+            <button onClick={() => setCurentPage((prev) => prev - 1)} disabled={totalPages === 1} className='px-4 py-2 bg-gray-200 disabled:opacity-50'>
+                prev
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button onClick={() => setCurentPage((prev) => prev + 1)} disabled={totalPages === totalPages} className='px-4 py-2 bg-blue-500 disabled:opacity-50'>
+                Next
+            </button>
+        </div>
 
         {aiPerformance && (
             <div className="mt-4 p-4 bg-gray-100 rounded">

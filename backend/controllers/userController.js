@@ -9,13 +9,17 @@ export const getUsers = asyncHandler(async(req, res) => {
         error.statusCode = 403
         throw error
     }
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
     let users
     if (req.user.role === "Admin") {
-        users = await User.find({_id: {$ne: req.user._id}}).select("-password").sort({createdAt: -1})
+        users = await User.find({_id: {$ne: req.user._id}}).select("-password").sort({createdAt: -1}).skip((page - 1) * limit).limit(limit)
     } else {
-        users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1})
+        users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1}).skip((page - 1) * limit).limit(limit)
     }
-    res.status(200).json({ success: true, count: users.length, users})
+    
+    const total = req.user.role === 'Admin' ? await User.countDocuments({_id: {$ne: req.user._id}}) : await User.countDocuments({role: 'Employee'})
+    res.status(200).json({ success: true, users, currentPage: page, totalPages: Math.ceil(total / limit), totalRecords: total})
 })
 
 // get single user profile

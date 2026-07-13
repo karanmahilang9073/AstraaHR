@@ -11,10 +11,10 @@ const errorHandler = (error) => {
 }
 
 //get all users
-export const getUsers = async() => {
+export const getUsers = async(page = 1, limit = 10) => {
     try {
-        const res = await axiosClient.get('/users')
-        return res.data.users
+        const res = await axiosClient.get(`/users?page=${page}&limit=${limit}`)
+        return res.data
     } catch (error) {
         throw errorHandler(error)
     }
