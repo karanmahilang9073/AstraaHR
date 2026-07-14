@@ -11,8 +11,14 @@ function ProtectedRoutes({children, role}) {
     if(!user){
         return <Navigate to='/login' replace />
     }
-    if(role && user?.role !== role) {
-        return <Navigate to='/unauthorized' replace />
+    if(role) {
+        if (Array.isArray(role)) {
+            if (!role.includes(user.role)) {
+                return <Navigate to='/unauthorized' replace />
+            }
+        } else if (user.role !== role) {
+            return <Navigate to='/unauthorized' replace />
+        }
     }
   return children
 }

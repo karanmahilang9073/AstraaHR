@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { getSalaries, deleteSalary, updateStatus } from '../../services/SalaryService'
+import { getSalaries,  updateStatus } from '../../services/SalaryService'
 import SalaryCard from '../../components/salary/SalaryCard'
 import {toast} from 'react-toastify'
 import SalaryModal from '../../components/salary/SalaryModal'
@@ -15,6 +15,9 @@ function Compensation() {
     const [showModal, setShowModal] = useState(false)
     const [editingSalary, setEditingSalary] = useState(null)
 
+    const [totalPages, setTotalPages] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
+
     const [aiResult, setAiresult] = useState("")
 
     useEffect(() => {
@@ -22,8 +25,9 @@ function Compensation() {
             setLoading(true)
             setError(null)
             try {
-                const res = await getSalaries()
-                setSalaries(res)
+                const res = await getSalaries(currentPage, 4)
+                setSalaries(res.salaries)
+                setTotalPages(res.totalPages)
             } catch (error) {
                 console.error('error while loading salaries', error)
                 toast.error('failed to fetch salaries')
@@ -32,21 +36,7 @@ function Compensation() {
             }
         }
         fetch()
-    }, [])
-
-    const handleDelete = async(salaryId) => {
-        setError(null)
-        try {
-            await deleteSalary(salaryId)
-            setSalaries(prev => prev.filter(s => s._id !== salaryId))
-            toast.success('salary deleted successfully')
-        } catch (error) {
-            console.error('error while deleting salary', error)
-            toast.error('failed to delete salary')
-        } finally {
-            setLoading(false)
-        }
-    }
+    }, [currentPage])
 
     const handleStatus = async(salaryId, currentStatus) => {
         setError(null)
@@ -107,18 +97,28 @@ function Compensation() {
         {/* salary grid */}
         {!loading && !error && salaries.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {salaries.map((salary) => (
+                {[...salaries].sort((a,b) => new Date(b.month) - new Date(a.month)).map((salary) => (
                     <div key={salary._id} className='flex flex-col gap-2'>
                         <SalaryCard salary={salary} onStatusUpdate={handleStatus}  />
                         <div className='flex gap-2'>
                             <button onClick={() => setEditingSalary(salary)} disabled={salary.status === 'paid'} className={`flex-1 py-1 rounded ${salary.status === 'paid' ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white'}`}>Edit</button>
-                            <button onClick={() => handleDelete(salary._id)} className='flex-1 bg-red-500 text-white py-1 rounded'>Delete</button>
-                            <button onClick={() => handlePredict(salary.employee)} className='bg-indigo-500 text-white py-1 rounded'>Predict salary</button>
+                            {salary.status !== "paid" && (
+                                <button onClick={() => handlePredict(salary.employee)} className='bg-indigo-500 text-white py-1 rounded'>Predict salary</button>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
         )}
+
+        {/* pagination */}
+        <div className="flex justify-center items-center gap-4 mt-6">
+            <button onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1} className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">prev</button>
+
+            <span>Page {currentPage} of {totalPages}</span>
+
+            <button onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage === totalPages} className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50">Next</button>
+        </div>
 
         {/* predicted salary */}
         {aiResult && (

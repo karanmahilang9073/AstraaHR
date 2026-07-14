@@ -34,7 +34,7 @@ export const createSalary =  asyncHandler(async(req, res) => {
     const monthDate = new Date(month)
     
     const salary = await Salary.create({employee, baseSalary, allowance, deduction, month : monthDate})
-    await salary.populate("employee", "name email")
+    await salary.populate("employee", "name email role")
 
     try {
         if(salary.status === 'paid'){
@@ -57,15 +57,20 @@ export const getAllSalaries = asyncHandler(async(req, res) => {
         filters.employee = req.user._id
     }
 
-    const salaries = await Salary.find(filters).populate("employee", "name email").sort({month : -1})
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 8
 
-    res.status(200).json({success : true, count : salaries.length,  data : salaries})
+    const total = await Salary.countDocuments(filters)
+
+    const salaries = await Salary.find(filters).populate("employee", "name email role").sort({month : -1}).skip((page - 1) * limit).limit(limit)
+
+    res.status(200).json({success : true, salaries, currentPage: page, totalPages: Math.ceil(total / limit), totalRecords: total})
 })
 
 export const getSalary = asyncHandler(async(req,res) => {
     const salaryId = req.params.id 
 
-    const salary = await Salary.findById(salaryId).populate("employee", "name email")
+    const salary = await Salary.findById(salaryId).populate("employee", "name email role")
     if(!salary){
         const error = new Error('salary not found')
         error.statusCode = 404
@@ -185,29 +190,3 @@ export const getSalaryByEmployee = asyncHandler(async(req, res) => {
     res.status(200).json({success : true, message : 'salaries fetched successfully', count : salaries.length, salaries })
 })
 
-export const deleteSalary = asyncHandler(async(req, res) => {
-    const salaryId = req.params.id 
-
-    if(!['HR','Admin'].includes(req.user.role)) {
-        const error = new Error('unauthorized to delete salary')
-        error.statusCode = 403
-        throw error
-    }
-
-    const salary = await Salary.findById(salaryId)
-    if(!salary){
-        const error = new Error('salary not found')
-        error.statusCode = 404
-        throw error
-    }
-
-    if(salary.status !== "pending") {
-        const error = new Error('only pending salaries can be deleted')
-        error.statusCode = 403
-        throw error
-    }
-
-    await Salary.findByIdAndDelete(salaryId)
-
-    res.status(200).json({success : true, message : 'salary deleted successfully'})
-})

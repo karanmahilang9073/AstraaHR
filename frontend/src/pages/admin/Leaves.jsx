@@ -108,7 +108,9 @@ function Leaves() {
                 {leaves.map((l) => (
                     <div key={l._id} className='flex flex-col gap-2'>
                     <LeaveCard leave={l} onApprove={handleApprove} onReject={handleReject} />
-                    <button onClick={() => analyze(l)} className='bg-indigo-500 text-white py-1 rounded'>Analyze AI</button>
+                    {leaves.status === "pending" && (
+                        <button onClick={() => analyze(l)} className='bg-indigo-500 text-white py-1 rounded'>Analyze AI</button>
+                    )}
                     </div>
                 ))}
             </div>

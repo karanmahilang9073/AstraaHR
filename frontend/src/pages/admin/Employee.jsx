@@ -1,10 +1,10 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import { getUsers, updateUser, deleteUser } from '../../services/userService'
 import { toast } from 'react-toastify'
 import EditemployeeModal from '../../components/common/EditemployeeModal'
 import { useNavigate } from 'react-router-dom'
 import { getPerformance } from '../../services/AiService'
-
+import { AuthContext } from '../../context/AuthContext'
 
 
 function Employee() {
@@ -12,12 +12,18 @@ function Employee() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
+    const [currentPage, setCurentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+
     const [showModal, setShowModal] =  useState(false)
     const [selectedEmployee, setSelectedEmployee] = useState(null)
     const [searchEmp, setSearchEmp] = useState('')
     const [viewModal, setViewModal] = useState(false)
+    const [deleteEmployee, setDeleteEmployee] = useState(null)
 
     const [aiPerformance, setAiPerformance] = useState('')
+
+    const {user} = useContext(AuthContext)
 
     const navigate = useNavigate()
 
@@ -28,8 +34,10 @@ function Employee() {
             setLoading(true)
             setError(null)
             try {
-                const res = await getUsers()
-                setEmployees(res)
+                const res = await getUsers(currentPage, 10)
+                console.log(res.users)
+                setEmployees(res.users)
+                setTotalPages(res.totalPages)
             } catch (error) {
                 console.error('error while fetcing employees', error)
                 toast.error('failed to fetch employees')
@@ -38,7 +46,7 @@ function Employee() {
             }
         }
         fetchData()
-    }, [])
+    }, [currentPage])
 
     const handleEdit = async( data) => {
         setError(null)
@@ -137,10 +145,14 @@ function Employee() {
                             <td className='p-3 border-b'>{emp.department}</td>
                             <td className='p-3 border-b'>{emp.role}</td>
                             <td className="p-3 border-b">
+                                {user?.role === "Admin" && (
+                                    <>
+                                    <button onClick={() => setDeleteEmployee(emp)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
+                                    <button onClick={() => navigate(`/admin/employee-analytics/${emp._id}`)} className='bg-purple-500 text-white px-2 py-1 rounded mr-2 text-sm'>view analytics</button>
+                                    </>
+                                )}
                                 <button onClick={() => handleView(emp)} className='bg-blue-500 text-white px-2 py-1 rounded mr-2 text-sm'>View</button>
                                 <button onClick={() => {setSelectedEmployee(emp); setShowModal(true)}} className='bg-yellow-500 text-white px-2 py-1 rounded text-sm mr-2'>edit</button>
-                                <button onClick={() => handleDelete(emp._id)} className='bg-red-500 text-white px-2 py-1 rounded text-sm'>Delete</button>
-                                <button onClick={() => navigate(`/admin/employee-analytics/${emp._id}`)} className='bg-purple-500 text-white px-2 py-1 rounded mr-2 text-sm'>view analytics</button>
                                 <button onClick={() => {handlePerformance(emp._id); setSelectedEmployee(emp)}} className='bg-indigo-500  text-white px-2 py-1 rounded text-sm mr-2'>AI report</button>
                             </td>
                         </tr>
@@ -150,6 +162,34 @@ function Employee() {
             </div>  
         )}
 
+        {/* pagination */}
+        <div className="flex justify-center items-center gap-4 mt-6">
+            <button onClick={() => setCurentPage((prev) => prev - 1)} disabled={totalPages === 1} className='px-4 py-2 bg-gray-200 disabled:opacity-50'>
+                prev
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button onClick={() => setCurentPage((prev) => prev + 1)} disabled={totalPages === totalPages} className='px-4 py-2 bg-blue-500 disabled:opacity-50'>
+                Next
+            </button>
+        </div>
+
+        {/* delete confirmation */}
+        {deleteEmployee && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-md">
+                    <h2 className="text-xl font-semibold">Delete Employee</h2>
+                    <p className="text-gray-600 mb-6">
+                        Are you sure want to delete this employee? <span className="font-semibold">{deleteEmployee.name}</span>
+                    </p>
+                    <div className="flex justify-end gap-3">
+                        <button onClick={() => setDeleteEmployee(null)} className='px-4 py-2 border rounded hover:bg-gray-100'>Cancel</button>
+                        <button onClick={() => {handleDelete(deleteEmployee._id); setDeleteEmployee(null)}} className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'>Delete</button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* AI insights */}
         {aiPerformance && (
             <div className="mt-4 p-4 bg-gray-100 rounded">
                 <h3 className="font-semibold">AI performance report for:- {selectedEmployee?.name}</h3>
@@ -184,7 +224,6 @@ function Employee() {
         
       <EditemployeeModal show={showModal} onClose={() => setShowModal(false)} employee={selectedEmployee} onSave={handleEdit} />
 
-        
     </div>
   )
 }

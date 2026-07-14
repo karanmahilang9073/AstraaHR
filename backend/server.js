@@ -20,17 +20,6 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
-// add morgan middlewares
-// add helmet middlewares
-
-// npm install express-rate-limit
-// import rateLimit from 'express-rate-limit'
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100 // limit each IP to 100 requests per windowMs
-// })
-// app.use(limiter)
-
 const server = http.createServer(app)
 
 app.use(cors({
@@ -45,7 +34,6 @@ const PORT = process.env.PORT || 7000
 app.get('/', (req, res)=> {
     res.send('backend running successfully')
 })
-
 
 //database call
 connectDB()

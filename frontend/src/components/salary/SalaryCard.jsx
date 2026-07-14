@@ -24,6 +24,10 @@ function SalaryCard({salary, onStatusUpdate}) {
             <span className={`px-3 py-1 text-sm rounded-full font-medium ${status[salary.status] || 'bg-gray-100 text-gray-700'}`}>{salary.status?.toUpperCase()}</span>
         </div>
 
+        <p className="text-sm text-gray-600 mb-3">
+            USER: <span className="font-semibold">{salary.employee?.name}  ({salary.employee?.role})</span>
+        </p>
+
         {/* net salary */}
         <div className="mb-5">
             <p className="text-sm text-gray-500">Net Salary</p>
@@ -44,9 +48,9 @@ function SalaryCard({salary, onStatusUpdate}) {
         </div>
 
         {/* status update button */}
-            {salary.status !== 'paid' && (
-                <button onClick={() => onStatusUpdate(salary._id, salary.status)} className='mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600'>update status</button>
-            )}
+        {salary.status !== 'paid' && (
+            <button onClick={() => onStatusUpdate(salary._id, salary.status)} className='mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600'>update status</button>
+        )}
     </div>
   )
 }

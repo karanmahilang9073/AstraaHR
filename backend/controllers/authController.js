@@ -6,7 +6,7 @@ import { welcomeMail } from "../services/emailService.js"
 
 
 export const register = asyncHandler(async (req, res, next) => {
-    const {name, email, password, role, department} = req.body 
+    const {name, email, password,  department} = req.body 
     if(!name || !email || !password){
         const error = new Error('all fields are required')
         error.statusCode = 400
@@ -28,7 +28,7 @@ export const register = asyncHandler(async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
-    const user = await User.create({name, email : emailNormalized, password : hashedPassword, role, department})
+    const user = await User.create({name, email : emailNormalized, password : hashedPassword, role: 'Employee', department})
 
     try {
         await welcomeMail({name : user.name, email : user.email, role : user.role})

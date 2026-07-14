@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 
-function TaskCard({task,  onDelete, onComplete}) {
-
-    if(!task) return null;
+function TaskCard({task,  onDelete, onComplete, onEdit}) {
 
     const isOverdue = useMemo(() => {
-        return task.deadline &&  new Date(task.deadline) < new Date() && task.status !== "completed"
-    }, [task.deadline, task.status]) 
+        return task?.deadline &&  new Date(task.deadline) < new Date() && task.status !== "completed"
+    }, [task?.deadline, task?.status]) 
+
+    if(!task) return null
 
     const statusColor = {
         pending : "bg-yellow-100 text-yellow-700",
@@ -26,7 +26,10 @@ function TaskCard({task,  onDelete, onComplete}) {
         {/* header */}
         <div className='flex justify-between items-center'>
             <h3 className='text-lg font-semibold'>{task.title}</h3>
-            <span className={`px-2 py-1 text-xs rounded ${statusColor[task.status]}`}>{task.status?.toUpperCase()}</span>
+            <span className={`px-2 py-1 text-xs rounded ml-238 ${statusColor[task.status]}`}>{task.status?.toUpperCase()}</span>
+            {task.status !== "completed" && (
+                <button onClick={() => onEdit && onEdit(task)} className='px-3 py-1 text-sm bg-yellow-500 hover:bg-yellow-600 text-white rounded'>Edit</button>
+            )}
         </div>
 
         {/* description */}

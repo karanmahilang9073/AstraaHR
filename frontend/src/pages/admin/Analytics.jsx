@@ -36,11 +36,11 @@ function Analytics() {
                 // total employees
                 const totalEmployees = user.length 
                 // attendance %
-                const present = attendance.filter(a => a.status === "present").length
+                const present = attendance.attendance.filter(a => a.status === "present").length
                 const attendancePercentage = attendance.length > 0 ? ((present / attendance.length) * 100).toFixed(1) : 0
                 // leave stats
-                const approvedLeave = leave.filter(l => l.status ===  'approved').length
-                const pendingLeave = leave.filter(l => l.status ===  'pending').length
+                const approvedLeave = leave.leaves.filter(l => l.status ===  'approved').length
+                const pendingLeave = leave.leaves.filter(l => l.status ===  'pending').length
                 // task stats
                 const completedTask = task.filter(t => t.status === "completed").length
                 const pendingTask = task.filter(t => t.status !== "completed").length
@@ -133,7 +133,7 @@ function Analytics() {
             </div>
 
             {/* avg salary */}
-            <div className="bg-white shadow rounded-xl p-5">
+            <div className="bg-white shadow rounded-xl p-5 w-40">
                 <h2 className="text-gray-500 text-sm">Avg Salary</h2>
                 <p className="text-2xl font-bold mt-2">
                     ₹{stats?.salary?.average}

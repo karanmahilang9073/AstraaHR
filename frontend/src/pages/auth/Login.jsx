@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import {useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { toast } from 'react-toastify'
 import {login as loginService} from '../../services/AuthService'
@@ -34,7 +34,11 @@ function Login() {
       const res = await loginService(formData)
       login(res)
       toast.success('welcome back to AstraaHR')
-      navigate(res.user.role === 'Admin' ? '/admin' : '/employee')
+      if (res.user.role === 'Admin' || res.user.role === 'HR') {
+        navigate('/admin')
+      }else {
+        navigate('/employee')
+      }
     } catch (error) {
       const message = error?.message || error || 'login failed'
       setError(message)
@@ -45,36 +49,62 @@ function Login() {
   }
 
   return (
-    
-  <div className=" flex items-center justify-center  from-indigo-600 via-purple-600 to-pink-500 px-6">
+    <div className="grid overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-[0_30px_90px_rgba(15,23,42,0.45)] backdrop-blur-xl lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="relative hidden flex-col justify-between p-10 text-white lg:flex">
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-500/90 via-slate-900/30 to-fuchsia-500/60" />
+        <div className="absolute right-8 top-8 h-32 w-32 rounded-full bg-white/10 blur-3xl" />
+        <div className="relative space-y-6">
+          <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium tracking-wide">
+            WorkSphere HR Suite
+          </div>
+          <div>
+            <h1 className="text-4xl font-semibold tracking-tight">
+              Welcome back.
+            </h1>
+            <p className="mt-4 max-w-md text-base leading-7 text-white/80">
+              Sign in to manage attendance, leaves, tasks, and salary data from one clean workspace.
+            </p>
+          </div>
+        </div>
 
-    <div className=" w-150 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl flex overflow-hidde">
-
-      {/* LEFT SIDE */}
-      <div className="hidden md:flex w-1/2 flex-col justify-center items-center text-white p-10">
-        <h1 className="text-4xl font-extrabold mb-4 tracking-wide">
-          WorkSphere
-        </h1>
-        <p className="text-lg opacity-80 text-center leading-relaxed">
-          Manage your team <br /> and stay productive 🚀
-        </p>
+        <div className="relative grid grid-cols-3 gap-3 text-sm">
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+            <p className="text-white/60">Faster</p>
+            <p className="mt-1 font-semibold">Daily ops</p>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+            <p className="text-white/60">Clearer</p>
+            <p className="mt-1 font-semibold">Team view</p>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+            <p className="text-white/60">Smarter</p>
+            <p className="mt-1 font-semibold">Workflows</p>
+          </div>
+        </div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="w-full md:w-1/2 bg-white p-10 rounded-2xl">
-        <form onSubmit={handleSubmit} className="w-60">
-
-          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-            Welcome Back 👋
-          </h2>
+      <div className="bg-slate-950/90 p-6 sm:p-8 lg:p-10">
+        <form onSubmit={handleSubmit} className="mx-auto w-full max-w-md space-y-6">
+          <div className="space-y-2 text-center lg:text-left">
+            <p className="text-sm font-medium uppercase tracking-[0.25em] text-indigo-300/90">
+              Sign in
+            </p>
+            <h2 className="text-3xl font-semibold text-white">
+              Welcome back
+            </h2>
+            <p className="text-sm leading-6 text-slate-300">
+              Use your WorkSphere credentials to continue.
+            </p>
+          </div>
 
           {error && (
-            <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+            <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+              {error}
+            </div>
           )}
 
-          {/* EMAIL */}
-          <div className="mb-5">
-            <label className="block mb-1 text-sm font-medium text-gray-600">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-200">
               Email
             </label>
             <input
@@ -84,49 +114,45 @@ function Login() {
               autoFocus
               onChange={handleChange}
               placeholder="Enter your email"
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/15"
             />
           </div>
 
-          {/* PASSWORD */}
-          <div className="mb-6">
-            <label className="block mb-1 text-sm font-medium text-gray-600">
-              Password
-            </label>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-slate-200">
+                Password
+              </label>
+              <span className="text-xs text-slate-400">
+                Secure access
+              </span>
+            </div>
             <input
               type="password"
               name="password"
               onChange={handleChange}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/15"
             />
           </div>
 
-          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition duration-300 font-semibold shadow-md"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-linear-to-r from-indigo-500 to-fuchsia-500 px-4 py-3.5 font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
 
-          {/* REGISTER */}
-          <p className="text-sm text-center mt-6 text-gray-600">
-            Don’t have an account?{" "}
-            <span
-              className="text-indigo-600 hover:underline cursor-pointer font-semibold"
-              onClick={() => navigate("/register")}
-            >
-              Register
-            </span>
+          <p className="text-center text-sm text-slate-400">
+            Don’t have an account?{' '}
+            <Link to="/register" className="font-semibold text-indigo-300 hover:text-indigo-200 hover:underline">
+              Create one
+            </Link>
           </p>
-
         </form>
       </div>
     </div>
-  </div>
-
   )
 }
 

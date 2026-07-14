@@ -60,7 +60,6 @@ function MySalary() {
             </div>
         )}
 
-      
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import express from 'express'
 import authMiddleware from '../middlewares/authMiddleware.js'
-import { createSalary, deleteSalary, getAllSalaries, getSalary, getSalaryByEmployee, updateSalary, updateStatus } from '../controllers/salaryController.js'
+import { createSalary, getAllSalaries, getSalary, getSalaryByEmployee, updateSalary, updateStatus } from '../controllers/salaryController.js'
 
 const salaryRouter = express.Router()
 
@@ -10,7 +10,5 @@ salaryRouter.get('/employee/:id', authMiddleware, getSalaryByEmployee)
 salaryRouter.get("/:id", authMiddleware, getSalary)
 salaryRouter.put('/:id', authMiddleware, updateSalary)
 salaryRouter.put('/:id/status', authMiddleware, updateStatus)
-salaryRouter.delete('/:id', authMiddleware, deleteSalary)
-
 
 export default salaryRouter

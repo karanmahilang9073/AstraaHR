@@ -16,11 +16,10 @@ export const createSalary = async(data) => {
 }
 
 // get all salaries with filter
-export const getSalaries = async(params = {}) => {
+export const getSalaries = async(page = 1, limit = 4) => {
     try {
-        const query = new URLSearchParams(params).toString()
-        const res = await axiosClient.get(`/salary?${query}`)
-        return res.data.data
+        const res = await axiosClient.get(`/salary?page=${page}&limit=${limit}`)
+        return res.data
     } catch (error) {
         throw errorHandler(error)
     }
@@ -60,16 +59,6 @@ export const updateStatus = async(id, status) => {
 export const getSalaryByEmployee = async(employeeId) => {
     try {
         const res = await axiosClient.get(`/salary/employee/${employeeId}`)
-        return res.data
-    } catch (error) {
-        throw errorHandler(error)
-    }
-}
-
-//delete salary
-export const deleteSalary = async(id) => {
-    try {
-        const res = await axiosClient.delete(`/salary/${id}`)
         return res.data
     } catch (error) {
         throw errorHandler(error)

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {ListTodo, Clock, DollarSign, Calendar} from 'lucide-react'
 import StatsCard from "../../components/common/StatsCard";
+import { AuthContext } from "../../context/AuthContext";
 
 //services
 import { getTasks } from "../../services/TaskService";
@@ -21,7 +22,9 @@ function Dashboard() {
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const today = new Date();
+  const {user} = useContext(AuthContext)
+
+  const currentDate = new Date()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,14 +32,14 @@ function Dashboard() {
       try {
         const [taskRes, attendanceRes, salaryRes, leaveRes] = await Promise.all([
             getTasks(),
-            getMyAttendance(today.getMonth() + 1, today.getFullYear()),
+            getMyAttendance(currentDate.getMonth() + 1, currentDate.getFullYear()),
             getSalaries(),
             getLeaves(),
         ]);
         setTask(taskRes || []);
         setAttendance(attendanceRes || []);
-        setSalary(salaryRes || []);
-        setLeaves(leaveRes || []);
+        setSalary(salaryRes.salaries || []);
+        setLeaves(leaveRes.leaves || []);
       } catch (error) {
         console.error("dashboard fetch error", error);
       } finally {
@@ -45,6 +48,13 @@ function Dashboard() {
     };
     fetchData();
   }, []);
+
+  const today = currentDate.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    })
 
   if (loading) {
     return (
@@ -57,6 +67,12 @@ function Dashboard() {
   return (
     <div className="p-5 space-y-6 ">
       <h1 className="text-2xl font-bold">Employee Dashboard</h1>
+
+      <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold">👋Welcome back, {user.name}!</h2>
+            <p className="text-gray-600 mt-2">Role: {user.role}</p>
+            <p className="text-gray-800 text-sm ">Today: {today}</p>
+        </div>
 
       {/* grid layout */}
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ">

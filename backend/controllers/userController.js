@@ -1,6 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js"
 import User from "../models/User.js"
-
+import bcrypt from 'bcrypt'
 
 // get users
 export const getUsers = asyncHandler(async(req, res) => {
@@ -9,8 +9,17 @@ export const getUsers = asyncHandler(async(req, res) => {
         error.statusCode = 403
         throw error
     }
-    const users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1})
-    res.status(200).json({ success: true, count: users.length, users})
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    let users
+    if (req.user.role === "Admin") {
+        users = await User.find({_id: {$ne: req.user._id}}).select("-password").sort({createdAt: -1}).skip((page - 1) * limit).limit(limit)
+    } else {
+        users = await User.find({role : "Employee"}).select("-password").sort({createdAt : -1}).skip((page - 1) * limit).limit(limit)
+    }
+    
+    const total = req.user.role === 'Admin' ? await User.countDocuments({_id: {$ne: req.user._id}}) : await User.countDocuments({role: 'Employee'})
+    res.status(200).json({ success: true, users, currentPage: page, totalPages: Math.ceil(total / limit), totalRecords: total})
 })
 
 // get single user profile
@@ -37,8 +46,13 @@ export const updateUser = asyncHandler(async(req, res) => {
         throw error
     }
 
-    if (req.user._id.toString() !== user._id.toString() && req.user.role !== "Admin") {
-        const error = new Error('unauthorized')
+    if(req.user.role === "Employee" && req.user._id.toString() !== user._id.toString()){
+        const error = new Error("unauthorized")
+        error.statusCode = 403
+        throw error
+    }
+    if (req.user.role === "HR" && user.role !== "Employee") {
+        const error = new Error("unauthorized")
         error.statusCode = 403
         throw error
     }
@@ -102,6 +116,60 @@ export const deleteUser = asyncHandler(async(req, res) => {
         error.statusCode = 404
         throw error
     }
+    if (user.role === "Admin") {
+        const error = new Error("cannot delete another admin")
+        error.statusCode = 403
+        throw error
+    }
     await user.deleteOne()
     res.status(200).json({ success : true, message: 'user deleted successfully'})
+})
+
+export const createUserByAdmin = asyncHandler(async(req, res) => {
+    if(req.user.role !== 'Admin'){
+        const error = new Error('only admin can create user')
+        error.statusCode = 403
+        throw error
+    }
+
+    const {name, email, password, department, role} = req.body
+    if(!name || !email || !password || !role){
+        const error = new Error('all fields are required')
+        error.statusCode = 400
+        throw error
+    }
+
+    if(!['HR', 'Admin'].includes(role)){
+        const error = new Error('invalid role')
+        error.statusCode= 400
+        throw error
+    }
+
+    if(password.length < 6){
+        const error = new Error('password must be at least 6 chaaracter')
+        error.statusCode = 400
+        throw error
+    }
+
+    const emailNormalized = email.toLowerCase()
+    const existingUser = await User.findOne({email: emailNormalized})
+    if(existingUser){
+        const error = new Error('user already exists')
+        error.statusCode = 409
+        throw error
+    }
+
+    const hasehdpas = await bcrypt.hash(password, 10)
+
+    const user = await User.create({name, email: emailNormalized, password: hasehdpas, department: department || 'General', role})
+
+    res.status(201).json({success: true, message: 'user created successfully', 
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            department: user.department
+        }
+    })
 })
